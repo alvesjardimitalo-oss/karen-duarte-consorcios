@@ -141,6 +141,9 @@ create policy vouchers_staff_all on public.vouchers for all using (public.is_sta
 create policy vouchers_self_read on public.vouchers for select using (exists(select 1 from public.contemplations ct join public.consortium_members m on m.id=ct.member_id join public.clients c on c.id=m.client_id where ct.id=contemplation_id and c.user_id=auth.uid()));
 create policy audit_admin_read on public.audit_logs for select using (public.current_role() in ('SUPER_ADMIN','ADMIN'));
 
--- Após criar a usuária no Supabase Auth com o e-mail abaixo, execute este UPDATE usando o UUID real dela.
--- Não armazenamos senha no repositório.
+-- Bootstrap dos administradores. Criar primeiro os usuários no Supabase Auth e substituir pelos UUIDs reais.
+-- Nenhuma senha deve ser armazenada no repositório.
+-- Karen Duarte Martins: ADMIN
 -- update public.profiles set name='Karen Duarte Martins', email='karenduartemartins@gmail.com', phone='33999628147', role='ADMIN' where id='<UUID_AUTH_KAREN>';
+-- Italo Alves Jardim: SUPER_ADMIN (acesso técnico/administrativo total)
+-- update public.profiles set name='Italo Alves Jardim', email='alvesjardim.italo@gmail.com', phone='33998556503', role='SUPER_ADMIN' where id='<UUID_AUTH_ITALO>';
