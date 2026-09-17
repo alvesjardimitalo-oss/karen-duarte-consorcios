@@ -4,13 +4,12 @@
   .sidebar:after{display:none}
   .brand{min-height:auto!important;padding:2px 0!important;border:0!important;justify-content:flex-start!important;text-align:left!important}
   .brand strong{font-size:27px!important}.brand span{font-size:7px!important;letter-spacing:1.7px!important;margin-top:5px!important}
-  .sidebar nav{display:grid!important;position:fixed!important;z-index:50;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));grid-template-columns:repeat(4,1fr);gap:4px;padding:7px;background:rgba(95,13,44,.97);border:1px solid rgba(255,255,255,.13);border-radius:19px;box-shadow:0 14px 38px rgba(52,3,22,.32);backdrop-filter:blur(14px)}
+  .sidebar nav{display:grid!important;position:fixed!important;z-index:50;left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom));grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;padding:7px;background:rgba(95,13,44,.97);border:1px solid rgba(255,255,255,.13);border-radius:19px;box-shadow:0 14px 38px rgba(52,3,22,.32);backdrop-filter:blur(14px)}
   .sidebar nav a{min-width:0;text-decoration:none}
-  .sidebar nav>button:nth-of-type(n+2),.sidebar nav>a:nth-of-type(n+4){display:none!important}
   .sidebar nav button{width:100%!important;min-height:54px!important;padding:6px 3px!important;border-radius:13px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;gap:3px!important;font-size:9px!important;text-align:center!important;color:#ffe8f1!important}
   .sidebar nav button svg{width:19px;height:19px;color:#ffbad2!important}
   .sidebar nav button.active{background:#fff0f6!important;color:#8c123f!important;transform:none!important}.sidebar nav button.active svg{color:#c7195a!important}
-  .sidebar-profile{position:fixed!important;z-index:51;right:18px;bottom:calc(max(10px,env(safe-area-inset-bottom)) + 10px);width:46px!important;height:46px!important;padding:0!important;border:0!important;border-radius:14px!important;display:grid!important;place-items:center!important;background:#fff0f6!important;box-shadow:none!important}
+  .sidebar-profile{position:fixed!important;z-index:51;right:18px;bottom:calc(max(10px,env(safe-area-inset-bottom)) + 74px);width:46px!important;height:46px!important;padding:0!important;border:0!important;border-radius:14px!important;display:grid!important;place-items:center!important;background:#fff0f6!important;box-shadow:none!important}
   .sidebar-profile>div{display:none!important}.sidebar-profile img,.sidebar-profile .profile-fallback{width:34px!important;height:34px!important;border-radius:11px!important}
   .content{padding:22px 14px 24px!important;max-width:none!important}
   .content>header{display:block!important;margin-bottom:20px!important}.content>header h1{font-size:30px!important;margin-top:5px}.content>header .muted{max-width:290px;line-height:1.45}
@@ -21,3 +20,16 @@
   .installment-card{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;padding:16px!important}.inline-finance-form,.payment-form{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}.inline-finance-form input,.inline-finance-form select,.inline-finance-form button{width:100%!important;min-height:44px!important}.pix-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.pix-actions button{min-height:44px!important}
 }
 @media(max-width:380px){.stats{grid-template-columns:1fr!important}.sidebar nav button{font-size:8px!important}.content{padding-left:10px!important;padding-right:10px!important}}
+
+@media(max-width:900px){
+  html,body{max-width:100%;overflow-x:hidden}
+  img,svg{max-width:100%}
+  .brand{width:100%!important;overflow:hidden!important}
+  .brand strong{font-size:clamp(22px,7vw,27px)!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%!important}
+  .brand span{white-space:normal!important;line-height:1.25!important}
+  .form-grid input,.form-grid select,.client-form input,.client-form select,.member-add-form select{width:100%!important;min-width:0!important;min-height:44px!important}
+  .form-heading,.list-heading{align-items:flex-start!important;flex-direction:column!important}
+  .member-card{min-width:0!important;max-width:100%!important;overflow:hidden!important}
+  .member-info{min-width:0!important}.member-info strong,.member-info span{overflow-wrap:anywhere!important}
+  .client-list-card,.client-form-card,.panel,.stat{max-width:100%!important;overflow:hidden}
+}
