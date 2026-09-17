@@ -42,3 +42,19 @@
  .brand-copy strong{line-height:1!important}
  .brand-copy span{display:block!important;margin-top:4px!important}
 }
+
+@media(max-width:520px){
+ .clients-page{padding:12px 8px 94px!important}
+ .back-link{margin:2px 4px 14px!important;min-height:40px;align-items:center}
+ .clients-header{margin-bottom:14px!important}.clients-header h1{font-size:27px!important;line-height:1.08!important;overflow-wrap:anywhere}
+ .clients-count{max-width:100%!important;padding:10px 12px!important}
+ .client-form-card,.client-list-card{padding:14px!important;border-radius:16px!important;margin-bottom:12px!important}
+ .form-heading,.list-heading{gap:5px!important;margin-bottom:14px!important}.form-heading h2,.list-heading h2{font-size:18px!important;margin-bottom:3px!important}
+ .required-note{line-height:1.35!important}
+ .form-grid{gap:10px!important}.form-grid input,.form-grid select{font-size:16px!important;border-radius:12px!important;padding:11px!important}
+ .member-list{display:grid!important;gap:8px!important}.member-card{padding:11px!important;border-radius:14px!important;gap:9px!important}
+ .member-card .client-avatar{width:42px!important;height:42px!important;flex-basis:42px!important}.member-info strong{font-size:13px!important}.member-info span{font-size:10px!important}
+ .member-installments{margin-left:auto!important;white-space:nowrap!important}.member-installments b{font-size:13px!important}.member-installments span{font-size:9px!important}
+ .client-form>.primary,.member-add-form .primary{width:100%!important;min-height:46px!important;justify-content:center!important}
+ .member-add-form{display:grid!important;grid-template-columns:1fr!important;gap:9px!important}.member-add-form select{font-size:16px!important}
+}
