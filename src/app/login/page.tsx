@@ -37,8 +37,10 @@ export default function LoginPage() {
       const { error: recoveryError } = await supabase.auth.resetPasswordForEmail(normalizedEmail, { redirectTo });
       if (recoveryError) throw recoveryError;
       setMessage('Enviamos um link de recuperação para o seu e-mail.');
-    } catch {
-      setError('Não foi possível enviar a recuperação agora. Tente novamente.');
+    } catch (recoveryError) {
+      const detail = recoveryError instanceof Error ? recoveryError.message : String(recoveryError);
+      console.error('Erro ao solicitar recuperação de senha:', recoveryError);
+      setError(`Falha na recuperação: ${detail}`);
     } finally { setRecovering(false); }
   }
 
