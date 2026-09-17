@@ -28,3 +28,6 @@ html,body{background:linear-gradient(135deg,#fff 0%,#fff8fb 48%,#fff1f6 100%);co
 
 /* Dashboard interativo */
 .stat-link,.dashboard-panel-link{color:inherit;text-decoration:none;cursor:pointer}.stat-link{transition:.18s ease}.stat-link:hover,.dashboard-panel-link:hover{transform:translateY(-2px);border-color:#e7a9c0;box-shadow:0 13px 30px rgba(112,20,57,.11)}.dashboard-panel-link{display:block;transition:.18s ease}
+
+/* Links-card preservam aparência de card */
+a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!important;text-decoration:none!important}a.stat-link *,a.dashboard-panel-link *,a.consortium-card-link *{text-decoration:none!important}.stat-link:visited,.dashboard-panel-link:visited,.consortium-card-link:visited{color:var(--text)!important}.stat-link:focus-visible,.dashboard-panel-link:focus-visible,.consortium-card-link:focus-visible{outline:3px solid rgba(229,38,112,.22);outline-offset:2px}
