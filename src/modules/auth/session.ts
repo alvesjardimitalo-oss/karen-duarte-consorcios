@@ -17,3 +17,15 @@ export async function requireStaff() {
   if(!['SUPER_ADMIN','ADMIN','RECEBEDOR'].includes(session.profile.role)) redirect('/cliente');
   return session;
 }
+
+export async function requireClient() {
+  const session = await requireSession();
+  const { data: client, error } = await session.supabase
+    .from('clients')
+    .select('id,name,phone,profile_id,active')
+    .eq('profile_id', session.user.id)
+    .eq('active', true)
+    .maybeSingle();
+  if (error || !client) redirect('/portal');
+  return { ...session, client };
+}
