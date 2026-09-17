@@ -9,23 +9,37 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [recovering, setRecovering] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setError('');
-    setLoading(true);
+    setError(''); setMessage(''); setLoading(true);
     try {
       const supabase = createClient();
-      const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+      const { error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (authError) throw authError;
-      router.replace('/');
-      router.refresh();
+      router.replace('/'); router.refresh();
     } catch {
       setError('E-mail ou senha inválidos.');
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
+  }
+
+  async function handleRecovery() {
+    setError(''); setMessage('');
+    const normalizedEmail = email.trim();
+    if (!normalizedEmail) { setError('Digite seu e-mail acima para redefinir a senha.'); return; }
+    setRecovering(true);
+    try {
+      const supabase = createClient();
+      const redirectTo = `${window.location.origin}/redefinir-senha`;
+      const { error: recoveryError } = await supabase.auth.resetPasswordForEmail(normalizedEmail, { redirectTo });
+      if (recoveryError) throw recoveryError;
+      setMessage('Enviamos um link de recuperação para o seu e-mail.');
+    } catch {
+      setError('Não foi possível enviar a recuperação agora. Tente novamente.');
+    } finally { setRecovering(false); }
   }
 
   return (
@@ -36,7 +50,9 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="login-form">
           <label>E-mail<input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="seu@email.com" /></label>
           <label>Senha<input type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} placeholder="Sua senha" /></label>
+          <button type="button" onClick={handleRecovery} disabled={recovering} style={{background:'none',border:0,padding:0,color:'#d6457d',fontWeight:700,textAlign:'right',cursor:'pointer'}}>{recovering ? 'Enviando...' : 'Esqueci minha senha'}</button>
           {error && <p className="form-error" role="alert">{error}</p>}
+          {message && <p role="status" style={{color:'#6b7f67',fontWeight:600}}>{message}</p>}
           <button className="primary login-submit" disabled={loading}>{loading ? 'Entrando...' : 'Entrar'}</button>
         </form>
         <small className="muted">O acesso é individual. Nunca compartilhe sua senha.</small>
