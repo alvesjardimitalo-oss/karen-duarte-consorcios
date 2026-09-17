@@ -24,10 +24,10 @@ export async function adicionarParticipanteAction(formData: FormData) {
 
 export async function formarNovoGrupoAction(formData: FormData){
   const {supabase}=await requireStaff();
-  const sourceId=String(formData.get('source_consortium_id')??''),name=String(formData.get('name')??'').trim(),participantLimit=Number(formData.get('participant_limit')),installmentAmount=numberValue(formData.get('installment_amount')),durationMonths=Number(formData.get('duration_months')),dueDay=Number(formData.get('due_day')),drawDay=Number(formData.get('draw_day')),startsOn=String(formData.get('starts_on')??'');
+  const sourceId=String(formData.get('source_consortium_id')??''),name=String(formData.get('name')??'').trim(),participantLimit=Number(formData.get('participant_limit')),installmentAmount=numberValue(formData.get('installment_amount')),durationMonths=Number(formData.get('duration_months')),dueDay=Number(formData.get('due_day')),drawDay=Number(formData.get('draw_day')),startsOn=String(formData.get('starts_on')??''),dueRule=String(formData.get('due_rule')??'FIXED_DAY'),dueBusinessDay=Number(formData.get('due_business_day')||0);
   const reuseClientIds=formData.getAll('reuse_client_ids').map(String).filter(Boolean);
   if(!sourceId||name.length<2)throw new Error('Informe os dados do novo grupo.');
-  const{data:newId,error}=await supabase.rpc('create_new_group_from_finished_consortium',{p_source_consortium_id:sourceId,p_name:name,p_participant_limit:participantLimit,p_installment_amount:installmentAmount,p_duration_months:durationMonths,p_due_day:dueDay,p_draw_day:drawDay,p_starts_on:startsOn,p_reuse_client_ids:reuseClientIds});
+  const{data:newId,error}=await supabase.rpc('create_new_group_from_finished_consortium',{p_source_consortium_id:sourceId,p_name:name,p_participant_limit:participantLimit,p_installment_amount:installmentAmount,p_duration_months:durationMonths,p_due_day:dueDay,p_draw_day:drawDay,p_starts_on:startsOn,p_reuse_client_ids:reuseClientIds,p_due_rule:dueRule,p_due_business_day:dueRule==='BUSINESS_DAY'?dueBusinessDay:null});
   if(error)throw new Error(error.message);
   revalidatePath('/consorcios');revalidatePath('/');redirect(`/consorcios/${newId}`);
 }
