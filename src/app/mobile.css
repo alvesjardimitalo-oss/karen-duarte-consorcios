@@ -85,3 +85,13 @@
  .content{padding-bottom:18px!important}
 }
 @media(max-width:390px){.sidebar nav button{font-size:7.5px!important}.sidebar nav{left:5px!important;right:5px!important}}
+
+/* Mobile shell V4 — respiro lateral e topo visível */
+@media(max-width:520px){
+ .content{padding:22px 14px 20px!important;width:100%!important;max-width:100%!important}
+ .content>header{padding:0 2px!important;margin-bottom:18px!important;gap:14px!important}
+ .content>header h1{font-size:30px!important;line-height:1.08!important;margin-top:4px!important}
+ .content>header .muted{font-size:15px!important;line-height:1.45!important;margin-top:8px!important}
+ .content .stats,.content .grid{width:100%!important;max-width:100%!important}
+ .content .stat,.content .panel{border-width:1px!important}
+}
