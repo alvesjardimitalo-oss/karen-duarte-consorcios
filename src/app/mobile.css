@@ -95,3 +95,12 @@
  .content .stats,.content .grid{width:100%!important;max-width:100%!important}
  .content .stat,.content .panel{border-width:1px!important}
 }
+
+/* Mobile profile nav V5 — perfil integrado à barra */
+@media(max-width:900px){
+ .sidebar nav{padding-right:58px!important}
+ .sidebar-profile{right:17px!important;bottom:max(17px,calc(env(safe-area-inset-bottom) + 17px))!important;width:48px!important;height:54px!important;border-radius:13px!important;background:transparent!important;box-shadow:none!important;padding:0!important;display:grid!important;place-items:center!important;color:#ffe8f1!important;text-decoration:none!important}
+ .sidebar-profile img,.sidebar-profile .profile-fallback{width:34px!important;height:34px!important;border-radius:50%!important;object-fit:cover!important;background:#fff0f6!important;color:#8c123f!important;border:2px solid rgba(255,255,255,.75)!important}
+ .sidebar-profile>div{display:none!important}
+}
+@media(max-width:380px){.sidebar nav{padding-right:54px!important}.sidebar-profile{right:15px!important}}
