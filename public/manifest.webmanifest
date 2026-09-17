@@ -1,0 +1,13 @@
+{
+  "name": "Karen Martins Cosméticos",
+  "short_name": "Karen Martins",
+  "description": "Pedidos, consórcios e parcelas Karen Martins Cosméticos",
+  "start_url": "/portal",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#7b183c",
+  "lang": "pt-BR",
+  "orientation": "portrait-primary",
+  "categories": ["shopping", "business"]
+}
