@@ -11,8 +11,9 @@ async function uploadAvatar(supabase:any, foto:FormDataEntryValue|null) {
   if (!['image/jpeg','image/png','image/webp'].includes(foto.type)) throw new Error('Formato de foto inválido.');
   const ext=foto.type==='image/png'?'png':foto.type==='image/webp'?'webp':'jpg';
   const path=`${crypto.randomUUID()}.${ext}`;
-  const { error }=await supabase.storage.from('avatars').upload(path,foto,{upsert:false,contentType:foto.type});
-  if(error) throw error;
+  const bytes=new Uint8Array(await foto.arrayBuffer());
+  const { error }=await supabase.storage.from('avatars').upload(path,bytes,{upsert:false,contentType:foto.type,cacheControl:'3600'});
+  if(error) throw new Error(`Falha ao enviar foto: ${error.message}`);
   return supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl;
 }
 
