@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './brand.css';
 
 export const metadata: Metadata = {
-  title: 'Karen Martins | Consórcios',
+  title: 'Karen Martins | Cosméticos & Consórcios',
   description: 'Gestão de consórcios de cosméticos Karen Martins',
 };
 
