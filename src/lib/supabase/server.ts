@@ -7,14 +7,13 @@ type CookieToSet = {
   options?: CookieOptions;
 };
 
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://vqunstjzfrembtyoadqj.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_bFOz_56UrCKCBmIQvgd52g_LnXQDdvj';
+
 export async function createClient() {
   const cookieStore = await cookies();
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-  if (!url || !key) throw new Error('Supabase não configurado.');
-
-  return createServerClient(url, key, {
+  return createServerClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     cookies: {
       getAll() {
         return cookieStore.getAll();
@@ -23,7 +22,7 @@ export async function createClient() {
         try {
           cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
         } catch {
-          // Server Components não podem alterar cookies diretamente.
+          // Server Components podem ser somente leitura; o middleware renova a sessão.
         }
       },
     },
