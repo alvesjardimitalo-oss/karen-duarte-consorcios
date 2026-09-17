@@ -10,7 +10,7 @@ async function uploadAvatar(supabase:any, foto:FormDataEntryValue|null) {
   if (foto.size>5*1024*1024) throw new Error('A foto deve ter no máximo 5 MB.');
   if (!['image/jpeg','image/png','image/webp'].includes(foto.type)) throw new Error('Formato de foto inválido.');
   const ext=foto.type==='image/png'?'png':foto.type==='image/webp'?'webp':'jpg';
-  const path=`clientes/${crypto.randomUUID()}.${ext}`;
+  const path=`${crypto.randomUUID()}.${ext}`;
   const { error }=await supabase.storage.from('avatars').upload(path,foto,{upsert:false,contentType:foto.type});
   if(error) throw error;
   return supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl;
