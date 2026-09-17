@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 
-export type AppRole = 'SUPER_ADMIN' | 'ADMIN' | 'VENDEDOR_RECEBEDOR' | 'CLIENTE_PAGADOR';
+export type AppRole = 'SUPER_ADMIN' | 'ADMIN' | 'RECEBEDOR' | 'CLIENTE';
 
 export async function requireSession() {
   const supabase = await createClient();
@@ -10,16 +10,28 @@ export async function requireSession() {
 
   const { data: profile, error } = await supabase
     .from('profiles')
-    .select('id,name,email,phone,role,active')
+    .select('id,name,phone,role,active')
     .eq('id', user.id)
     .single();
 
   if (error || !profile?.active) redirect('/login');
-  return { supabase, user, profile: profile as { id:string; name:string; email:string|null; phone:string|null; role:AppRole; active:boolean } };
+  return {
+    supabase,
+    user,
+    profile: profile as {
+      id: string;
+      name: string;
+      phone: string | null;
+      role: AppRole;
+      active: boolean;
+    },
+  };
 }
 
 export async function requireStaff() {
   const session = await requireSession();
-  if (!['SUPER_ADMIN','ADMIN','VENDEDOR_RECEBEDOR'].includes(session.profile.role)) redirect('/cliente');
+  if (!['SUPER_ADMIN', 'ADMIN', 'RECEBEDOR'].includes(session.profile.role)) {
+    redirect('/cliente');
+  }
   return session;
 }
