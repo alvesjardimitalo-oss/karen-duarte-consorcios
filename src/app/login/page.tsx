@@ -47,7 +47,7 @@ export default function LoginPage() {
   return (
     <main className="login-page">
       <section className="login-card">
-        <div className="login-brand"><div className="butterfly">♡</div><strong>Karen Martins</strong><span>COSMÉTICOS • CONSÓRCIOS</span></div>
+        <div className="login-brand"><img className="brand-logo login-logo" src="/karen-martins-consorcios.svg" alt="Karen Martins Cosméticos e Consórcios" /></div>
         <div><p className="eyebrow">ÁREA SEGURA</p><h1>Bem-vinda!</h1><p className="muted">Entre para acompanhar turmas, parcelas, sorteios e contemplações.</p></div>
         <form onSubmit={handleSubmit} className="login-form">
           <label>E-mail<input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="seu@email.com" /></label>
