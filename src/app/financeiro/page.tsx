@@ -9,26 +9,26 @@ const n=(v:any)=>Number(v??0);
 export default async function Financeiro(){
  const{supabase,profile}=await requireStaff();
  const today=new Date(),todayKey=today.toISOString().slice(0,10),monthStart=new Date(today.getFullYear(),today.getMonth(),1).toISOString().slice(0,10),nextMonth=new Date(today.getFullYear(),today.getMonth()+1,1).toISOString().slice(0,10);
- const[{data:pay},{data:rec},{data:paidRec},{data:orders},{data:vouchers},{data:sales}]=await Promise.all([
+ const[{data:pay},{data:rec},{data:paidRec},{data:orders},{data:vouchers},{data:sales},{data:saleDebts},{data:saleDebtPaid}]=await Promise.all([
   supabase.from('accounts_payable').select('id,supplier_name,description,due_date,amount,status,paid_at,paid_amount').order('due_date'),
   supabase.from('installments').select('id,due_date,amount,status').in('status',['A_VENCER','VENCIDA']).order('due_date'),
   supabase.from('installments').select('id,amount,paid_at,status').eq('status','PAGA').gte('paid_at',monthStart).lt('paid_at',nextMonth),
   supabase.from('purchase_orders').select('id,total_amount,status,ordered_at,received_at,payment_method'),
-  supabase.from('vouchers').select('id,original_credit,available_balance,reserved_balance,status'),supabase.from('customer_orders').select('id,subtotal,sale_confirmed_at,status,customer_order_items(inventory_cost)').not('sale_confirmed_at','is',null).gte('sale_confirmed_at',monthStart).lt('sale_confirmed_at',nextMonth)
+  supabase.from('vouchers').select('id,original_credit,available_balance,reserved_balance,status'),supabase.from('customer_orders').select('id,subtotal,sale_confirmed_at,status,customer_order_items(inventory_cost)').not('sale_confirmed_at','is',null).gte('sale_confirmed_at',monthStart).lt('sale_confirmed_at',nextMonth),supabase.from('customer_order_debt_installments').select('id,amount,due_date,status,clients(name)').eq('status','PENDENTE').order('due_date'),supabase.from('customer_order_debt_installments').select('id,amount,paid_at,status').eq('status','PAGA').gte('paid_at',monthStart).lt('paid_at',nextMonth)
  ]);
  const payable=(pay??[])as any[],receivable=(rec??[])as any[],paid=(paidRec??[])as any[],purchases=(orders??[])as any[],vs=(vouchers??[])as any[];
- const openPay=payable.filter(x=>x.status!=='PAGO'&&x.status!=='CANCELADO'),p=openPay.reduce((s,x)=>s+n(x.amount),0),r=receivable.reduce((s,x)=>s+n(x.amount),0);
+ const saleReceivable=(saleDebts??[])as any[],salePaid=(saleDebtPaid??[])as any[];const openPay=payable.filter(x=>x.status!=='PAGO'&&x.status!=='CANCELADO'),p=openPay.reduce((s,x)=>s+n(x.amount),0),r=receivable.reduce((s,x)=>s+n(x.amount),0)+saleReceivable.reduce((s,x)=>s+n(x.amount),0);
  const overdueRec=receivable.filter(x=>x.due_date<todayKey),overduePay=openPay.filter(x=>x.due_date<todayKey);
- const receivedMonth=paid.reduce((s,x)=>s+n(x.amount),0),paidMonth=payable.filter(x=>x.status==='PAGO'&&x.paid_at&&String(x.paid_at).slice(0,10)>=monthStart&&String(x.paid_at).slice(0,10)<nextMonth).reduce((s,x)=>s+n(x.paid_amount||x.amount),0);
+ const receivedMonth=paid.reduce((s,x)=>s+n(x.amount),0)+salePaid.reduce((s,x)=>s+n(x.amount),0),paidMonth=payable.filter(x=>x.status==='PAGO'&&x.paid_at&&String(x.paid_at).slice(0,10)>=monthStart&&String(x.paid_at).slice(0,10)<nextMonth).reduce((s,x)=>s+n(x.paid_amount||x.amount),0);
  const boughtMonth=purchases.filter(x=>x.ordered_at>=monthStart&&x.ordered_at<nextMonth).reduce((s,x)=>s+n(x.total_amount),0);
  const monthSales=(sales??[]).filter((x:any)=>x.status!=='CANCELADO'),salesRevenue=monthSales.reduce((s:any,x:any)=>s+n(x.subtotal),0),cogs=monthSales.reduce((s:any,x:any)=>s+(x.customer_order_items??[]).reduce((a:any,i:any)=>a+n(i.inventory_cost),0),0),grossMargin=salesRevenue-cogs;const voucherFace=vs.reduce((s,x)=>s+n(x.original_credit),0),voucherAvailable=vs.reduce((s,x)=>s+n(x.available_balance),0),voucherReserved=vs.reduce((s,x)=>s+n(x.reserved_balance),0);
- const next=[...receivable.map(x=>({...x,type:'RECEBER'})),...openPay.map(x=>({...x,type:'PAGAR'}))].sort((a,b)=>a.due_date.localeCompare(b.due_date)).slice(0,12);
+ const next=[...receivable.map(x=>({...x,type:'RECEBER'})),...saleReceivable.map(x=>({...x,type:'VENDA'})),...openPay.map(x=>({...x,type:'PAGAR'}))].sort((a,b)=>a.due_date.localeCompare(b.due_date)).slice(0,12);
  return <><StaffNav profile={profile} active="financeiro"/><main className="clients-page with-app-nav"><div className="clients-wrap">
   <header className="clients-header"><div><p className="eyebrow">CENTRAL FINANCEIRA</p><h1>Financeiro</h1><p className="muted">Caixa, compromissos, recebimentos e vouchers separados para não confundir crédito do cliente com dinheiro da operação.</p></div></header>
   <div className="stats">
-   <article className="stat"><div className="stat-icon"><ArrowUpCircle/></div><span>A receber</span><strong>{money.format(r)}</strong><small>{receivable.length} parcelas abertas</small></article>
+   <article className="stat"><div className="stat-icon"><ArrowUpCircle/></div><span>A receber</span><strong>{money.format(r+saleReceivable.reduce((s,x)=>s+n(x.amount),0))}</strong><small>{receivable.length} consórcio · {saleReceivable.length} vendas</small></article>
    <article className="stat"><div className="stat-icon"><ArrowDownCircle/></div><span>A pagar</span><strong>{money.format(p)}</strong><small>{openPay.length} compromissos</small></article>
-   <article className="stat"><div className="stat-icon"><WalletCards/></div><span>Saldo projetado</span><strong>{money.format(r-p)}</strong><small>recebíveis menos compromissos</small></article>
+   <article className="stat"><div className="stat-icon"><WalletCards/></div><span>Saldo projetado</span><strong>{money.format(r-p)}</strong><small>consórcios e vendas menos compromissos</small></article>
    <article className="stat"><div className="stat-icon"><CircleDollarSign/></div><span>Recebido no mês</span><strong>{money.format(receivedMonth)}</strong><small>parcelas pagas no mês atual</small></article>
   </div>
   <div className="stats">
