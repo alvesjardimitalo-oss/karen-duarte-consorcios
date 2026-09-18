@@ -222,3 +222,8 @@ a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!impo
 @media(max-width:600px){.voucher-balance strong{width:100%;margin-left:0}.sale-cancel form{grid-template-columns:1fr}.sale-cancel button{width:100%;justify-content:center}}
 
 .overdue-text{color:#b4234d!important;font-weight:800}.member-installments small{display:block;color:#8c6875;font-size:10px;margin-top:2px}
+
+/* Voucher ledger */
+.voucher-ledger{display:grid;gap:12px}.voucher-ledger-card{border:1px solid #efd5df;border-radius:16px;background:#fff;padding:15px}.voucher-ledger-card h2{margin:2px 0;color:#641d3b}.voucher-balance{display:flex;flex-wrap:wrap;gap:8px 18px;padding:10px 0;border-top:1px solid #f5e4ea;border-bottom:1px solid #f5e4ea;font-size:12px}.voucher-balance strong{margin-left:auto;color:#a51f50}.voucher-moves{display:grid}.voucher-moves>div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:9px 0;border-bottom:1px dashed #efdce4}.voucher-moves>div:last-child{border-bottom:0}.voucher-moves span,.voucher-moves small{font-size:11px;color:#8c6473}.voucher-moves small{grid-column:1/-1}
+.sale-cancel{margin-top:8px;padding:10px;border:1px solid #f0d7df;border-radius:12px}.sale-cancel summary{cursor:pointer;font-weight:800;color:#9d2853}.sale-cancel form{display:grid!important;grid-template-columns:1fr auto;gap:8px;margin-top:10px}.sale-cancel input,.sale-fulfillment select{height:42px;border:1px solid #ebcbd7;border-radius:10px;background:#fff;padding:0 11px}.danger{border:0;border-radius:10px;background:#a9234f;color:#fff;font-weight:800;padding:0 14px;min-height:42px}
+@media(max-width:600px){.voucher-balance strong{width:100%;margin-left:0}.sale-cancel form{grid-template-columns:1fr}.danger{width:100%}}
