@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Bell, CircleDollarSign, Plus, ReceiptText, Search, Sparkles, TicketCheck } from 'lucide-react';
+import { Bell, CircleDollarSign, Plus, ReceiptText, Search, Sparkles, TicketCheck, Users } from 'lucide-react';
 import { requireStaff } from '@/modules/auth/session';
 import { LogoutButton } from '@/components/logout-button';
 import { StaffNav } from '@/components/staff-nav';
