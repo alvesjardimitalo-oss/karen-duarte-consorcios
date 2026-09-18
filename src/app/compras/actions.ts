@@ -8,7 +8,7 @@ export async function salvarProdutoAction(formData:FormData){
  const{supabase}=await requireStaff(); const id=String(formData.get('id')??'').trim();
  const sku=String(formData.get('sku')??'').replace(/\\D/g,''),name=String(formData.get('name')??'').trim(),brand=String(formData.get('brand')??'').trim();
  if(!sku||!name||!brand)throw new Error('Código numérico, produto e marca são obrigatórios.');
- const payload={sku,source_code:String(formData.get('source_code')??sku).trim()||sku,name,brand,category:String(formData.get('category')??'').trim()||null,description:String(formData.get('description')??'').trim()||null,image_url:String(formData.get('image_url')??'').trim()||null,active:true,updated_at:new Date().toISOString()};
+ const payload={sku,source_code:String(formData.get('source_code')??sku).trim()||sku,name,brand,category:String(formData.get('category')??'').trim()||null,description:String(formData.get('description')??'').trim()||null,image_url:String(formData.get('image_url')??'').trim()||null,image_status:String(formData.get('image_url')??'').trim()?'VERIFIED':'PENDING',image_checked_at:String(formData.get('image_url')??'').trim()?new Date().toISOString():null,active:true,updated_at:new Date().toISOString()};
  const q=id?supabase.from('products').update(payload).eq('id',id):supabase.from('products').insert({...payload,price:0,sale_price:null,cost_price:null});
  const{error}=await q;if(error)throw new Error(error.message);revalidatePath('/compras');
 }
