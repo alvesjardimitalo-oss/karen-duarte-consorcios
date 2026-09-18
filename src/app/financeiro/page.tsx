@@ -26,7 +26,7 @@ export default async function Financeiro(){
  return <><StaffNav profile={profile} active="financeiro"/><main className="clients-page with-app-nav"><div className="clients-wrap">
   <header className="clients-header"><div><p className="eyebrow">CENTRAL FINANCEIRA</p><h1>Financeiro</h1><p className="muted">Caixa, compromissos, recebimentos e vouchers separados para não confundir crédito do cliente com dinheiro da operação.</p></div></header>
   <div className="stats">
-   <article className="stat"><div className="stat-icon"><ArrowUpCircle/></div><span>A receber</span><strong>{money.format(r+saleReceivable.reduce((s,x)=>s+n(x.amount),0))}</strong><small>{receivable.length} consórcio · {saleReceivable.length} vendas</small></article>
+   <article className="stat"><div className="stat-icon"><ArrowUpCircle/></div><span>A receber</span><strong>{money.format(r)}</strong><small>{receivable.length} consórcio · {saleReceivable.length} vendas</small></article>
    <article className="stat"><div className="stat-icon"><ArrowDownCircle/></div><span>A pagar</span><strong>{money.format(p)}</strong><small>{openPay.length} compromissos</small></article>
    <article className="stat"><div className="stat-icon"><WalletCards/></div><span>Saldo projetado</span><strong>{money.format(r-p)}</strong><small>consórcios e vendas menos compromissos</small></article>
    <article className="stat"><div className="stat-icon"><CircleDollarSign/></div><span>Recebido no mês</span><strong>{money.format(receivedMonth)}</strong><small>parcelas pagas no mês atual</small></article>
