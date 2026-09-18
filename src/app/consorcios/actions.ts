@@ -31,3 +31,19 @@ export async function formarNovoGrupoAction(formData: FormData){
   if(error)throw new Error(error.message);
   revalidatePath('/consorcios');revalidatePath('/');redirect(`/consorcios/${newId}`);
 }
+
+export async function reservarMesAction(formData:FormData){
+ const{supabase}=await requireStaff();const consortiumId=String(formData.get('consortium_id')),memberId=String(formData.get('member_id')),month=String(formData.get('scheduled_month'));
+ const{error}=await supabase.from('consortium_schedule').upsert({consortium_id:consortiumId,member_id:memberId,scheduled_month:month,assignment_type:'ESCOLHIDO',locked:true,updated_at:new Date().toISOString()},{onConflict:'consortium_id,member_id'});
+ if(error)throw new Error(error.message);revalidatePath(`/consorcios/${consortiumId}`);
+}
+export async function gerarCalendarioAction(formData:FormData){
+ const{supabase}=await requireStaff();const id=String(formData.get('consortium_id'));const[{data:c},{data:m},{data:s}]=await Promise.all([supabase.from('consortia').select('starts_on,participant_limit').eq('id',id).single(),supabase.from('consortium_members').select('id').eq('consortium_id',id).eq('active',true),supabase.from('consortium_schedule').select('member_id,scheduled_month').eq('consortium_id',id)]);
+ if(!c||!m||m.length!==Number(c.participant_limit))throw new Error('Complete todas as vagas antes de gerar o calendário.');
+ const used=new Set((s??[]).map(x=>x.scheduled_month)),assigned=new Set((s??[]).map(x=>x.member_id));const freeMembers=m.filter(x=>!assigned.has(x.id)).sort(()=>Math.random()-.5);const start=new Date(c.starts_on+'T12:00:00');const months:string[]=[];
+ for(let i=0;i<Number(c.participant_limit);i++){const d=new Date(start);d.setMonth(start.getMonth()+i);d.setDate(1);const key=d.toISOString().slice(0,10);if(!used.has(key))months.push(key);}
+ const payload=freeMembers.map((x,i)=>({consortium_id:id,member_id:x.id,scheduled_month:months[i],assignment_type:'SORTEIO',locked:false}));
+ if(payload.length){const{error}=await supabase.from('consortium_schedule').insert(payload);if(error)throw new Error(error.message);}
+ await supabase.from('consortia').update({status:'ATIVO',updated_at:new Date().toISOString()}).eq('id',id);revalidatePath(`/consorcios/${id}`);revalidatePath('/sorteios');
+}
+export async function trocarMesesAction(formData:FormData){const{supabase}=await requireStaff();const id=String(formData.get('consortium_id')),a=String(formData.get('first_schedule_id')),b=String(formData.get('second_schedule_id'));if(!a||!b||a===b)throw new Error('Selecione duas pessoas diferentes.');const{error}=await supabase.rpc('swap_consortium_schedule',{p_first:a,p_second:b});if(error)throw new Error(error.message);revalidatePath(`/consorcios/${id}`);}
