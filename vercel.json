@@ -1,1 +1,1 @@
-{"crons":[{"path":"/api/notifications/send","schedule":"0 11 * * *"},{"path":"/api/products/sync?mode=discover","schedule":"0 8 1 * *"},{"path":"/api/products/sync?mode=process","schedule":"30 8 1 * *"}]}
+{"crons":[{"path":"/api/notifications/send","schedule":"0 11 * * *"},{"path":"/api/products/sync?mode=discover","schedule":"0 8 * * 1"},{"path":"/api/products/sync?mode=process","schedule":"0 9 * * *"}]}
