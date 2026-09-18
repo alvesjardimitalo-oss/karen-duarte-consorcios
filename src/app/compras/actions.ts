@@ -22,9 +22,9 @@ export async function criarPedidoCompraAction(formData:FormData){
  const{data:order,error}=await supabase.from('purchase_orders').insert({supplier_name:supplierName,order_number:orderNumber||null,ordered_at:orderedAt,status:'PEDIDO',payment_method:String(formData.get('payment_method')??'BOLETO'),notes:String(formData.get('notes')??'').trim()||null,created_by:profile.id}).select('id').single();
  if(error)throw new Error(error.message);
  const payload=items.map((i:any)=>({purchase_order_id:order.id,product_id:i.product_id,quantity:Number(i.quantity),unit_cost:Number(i.unit_cost),destination_type:i.destination_type||'ESTOQUE',voucher_id:i.voucher_id||null,client_id:i.client_id||null}));
- const{error:ie}=await supabase.from('purchase_order_items').insert(payload);if(ie)throw new Error(ie.message);
+ const{error:ie}=await supabase.from('purchase_order_items').insert(payload);if(ie)throw new Error(ie.message);const{error:ae}=await supabase.rpc('allocate_purchase_order_demands',{p_order:order.id});if(ae)throw new Error(ae.message);
  await supabase.rpc('recalculate_purchase_order_total',{p_order:order.id});
  if(Array.isArray(installments)&&installments.length){const{error:pe}=await supabase.from('accounts_payable').insert(installments.map((p:any,idx:number)=>({purchase_order_id:order.id,supplier_name:supplierName,description:`Pedido ${orderNumber||order.id.slice(0,8)} · parcela ${idx+1}`,installment_number:idx+1,due_date:p.due_date,amount:Number(p.amount)})));if(pe)throw new Error(pe.message);}
- revalidatePath('/compras');revalidatePath('/financeiro');revalidatePath('/estoque');
+ revalidatePath('/compras');revalidatePath('/financeiro');revalidatePath('/estoque');revalidatePath('/pedidos/historico');
 }
 export async function receberPedidoCompraAction(formData:FormData){const{supabase}=await requireStaff();const id=String(formData.get('id'));const{error}=await supabase.rpc('receive_purchase_order',{p_order:id});if(error)throw new Error(error.message);revalidatePath('/compras');revalidatePath('/estoque');}
