@@ -116,3 +116,8 @@ a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!impo
 /* Karen logo alignment V21 */
 .app-nav-brand{height:142px!important;padding:4px 8px 8px!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important}
 .official-brand-logo{display:block!important;width:220px!important;max-width:none!important;height:132px!important;object-fit:contain!important;object-position:center center!important;margin:0 auto!important;transform:none!important}
+
+
+/* Karen logo position V22 — visual alignment */
+.app-nav-brand{height:150px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.official-brand-logo{width:245px!important;max-width:none!important;height:142px!important;object-fit:contain!important;object-position:center!important;margin:0!important;position:relative!important;left:-9px!important;top:0!important}
