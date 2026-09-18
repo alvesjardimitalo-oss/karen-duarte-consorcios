@@ -15,9 +15,10 @@ export async function atualizarMeuPerfilAction(formData: FormData) {
     if(foto.size>5*1024*1024) throw new Error('A foto deve ter no máximo 5 MB.');
     if(!['image/jpeg','image/png','image/webp'].includes(foto.type)) throw new Error('Formato de foto inválido.');
     const ext=foto.type==='image/png'?'png':foto.type==='image/webp'?'webp':'jpg';
-    const path=`perfis/${user.id}/${crypto.randomUUID()}.${ext}`;
-    const {error}=await supabase.storage.from('avatars').upload(path,foto,{contentType:foto.type});
-    if(error) throw error;
+    const path=`${user.id}-${crypto.randomUUID()}.${ext}`;
+    const bytes=new Uint8Array(await foto.arrayBuffer());
+    const {error}=await supabase.storage.from('avatars').upload(path,bytes,{contentType:foto.type,cacheControl:'3600'});
+    if(error) throw new Error(`Falha ao enviar foto: ${error.message}`);
     avatarUrl=supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl;
   }
   const {error}=await supabase.from('profiles').update({name,phone:phone||null,avatar_url:avatarUrl||null}).eq('id',user.id);
