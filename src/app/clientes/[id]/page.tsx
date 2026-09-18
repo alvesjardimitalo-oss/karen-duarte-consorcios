@@ -1,23 +1,26 @@
 import Link from 'next/link';
-import { ArrowLeft, Camera, UserRound } from 'lucide-react';
+import { ArrowLeft, Camera, CircleDollarSign, ReceiptText, UserRound, Users } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { requireStaff } from '@/modules/auth/session';
 import { atualizarClienteAction } from '../actions';
 import { AvatarFileInput } from '@/components/avatar-file-input';
+const money=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+const phone=(v?:string|null)=>{const d=String(v??'').replace(/\D/g,'');if(d.length===11)return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;if(d.length===10)return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;return v??''};
 
-export default async function ClientePerfil({ params }: { params: Promise<{id:string}> }) {
-  const { id }=await params;
-  const { supabase }=await requireStaff();
-  const { data:cliente }=await supabase.from('clients').select('id,name,phone,cpf,address,tags,avatar_url,active,created_at').eq('id',id).maybeSingle();
-  if(!cliente) notFound();
-  return <main className="clients-page"><div className="clients-wrap narrow">
-    <header className="clients-header"><div><Link href="/clientes" className="back-link"><ArrowLeft size={17}/> Clientes</Link><p className="eyebrow">PERFIL DO CLIENTE</p><h1>{cliente.name}</h1><p className="muted">Dados pessoais e personalização do perfil.</p></div></header>
-    <section className="client-form-card profile-card">
-      <form action={atualizarClienteAction} className="client-form"><input type="hidden" name="id" value={cliente.id}/>
-        <label className="photo-field">{cliente.avatar_url?<img src={cliente.avatar_url} className="profile-avatar" alt=""/>:<div className="avatar-placeholder large"><UserRound size={42}/><span className="camera-badge"><Camera size={14}/></span></div>}<div><strong>Foto de perfil</strong><small>O cliente também poderá personalizar sua própria foto.</small><AvatarFileInput/></div></label>
-        <div className="form-grid"><label><span>Nome *</span><input name="nome" required defaultValue={cliente.name}/></label><label><span>Telefone *</span><input name="telefone" required defaultValue={cliente.phone}/></label><label><span>CPF</span><input name="cpf" defaultValue={cliente.cpf??''}/></label><label><span>Tags</span><input name="tags" defaultValue={(cliente.tags??[]).join(', ')}/></label><label className="full"><span>Endereço</span><input name="endereco" defaultValue={cliente.address??''}/></label><label className="toggle-line"><input name="active" type="checkbox" defaultChecked={cliente.active}/><span>Cliente ativo</span></label></div>
-        <button className="primary save-client" type="submit">Salvar alterações</button>
-      </form>
-    </section>
-  </div></main>;
+export default async function ClientePerfil({params}:{params:Promise<{id:string}>}){
+ const{id}=await params;const{supabase}=await requireStaff();
+ const[{data:cliente},{data:members}]=await Promise.all([
+  supabase.from('clients').select('id,name,phone,cpf,address,tags,avatar_url,active,created_at').eq('id',id).maybeSingle(),
+  supabase.from('consortium_members').select('id,active,consortia(id,name,status,installment_amount,duration_months),installments(id,status,installment_number,due_date,amount)').eq('client_id',id).order('joined_at')
+ ]);
+ if(!cliente)notFound();
+ const groups=(members??[])as any[],all=groups.flatMap(m=>m.installments??[]),paid=all.filter(p=>p.status==='PAGA').length,open=all.filter(p=>p.status!=='PAGA'&&p.status!=='ESTORNADA'),openAmount=open.reduce((s,p)=>s+Number(p.amount??0),0),overdue=open.filter(p=>p.status==='VENCIDA'),activeGroups=groups.filter(m=>m.active&&m.consortia?.status!=='FINALIZADO');
+ return <main className="clients-page"><div className="clients-wrap narrow">
+ <header className="clients-header"><div><Link href="/clientes" className="back-link"><ArrowLeft size={17}/> Clientes</Link><p className="eyebrow">PERFIL DO CLIENTE</p><h1>{cliente.name}</h1><p className="muted">Dados, consórcios e situação financeira em um só lugar.</p></div></header>
+ <section className="client-list-card client-overview-card"><div className="client-overview-head">{cliente.avatar_url?<img src={cliente.avatar_url} className="profile-avatar" alt=""/>:<div className="avatar-placeholder large"><UserRound size={42}/></div>}<div><strong>{cliente.name}</strong><span>{phone(cliente.phone)}</span><small>{cliente.active?'Cliente ativo':'Cliente inativo'}</small></div></div>
+ <div className="client-finance-grid"><div><CircleDollarSign size={18}/><span>Em aberto</span><strong>{money.format(openAmount)}</strong><small>{open.length} parcelas</small></div><div><ReceiptText size={18}/><span>Pagas</span><strong>{paid}</strong><small>{all.length} geradas</small></div><div><Users size={18}/><span>Consórcios</span><strong>{activeGroups.length}</strong><small>turmas ativas</small></div></div>
+ {overdue.length>0&&<div className="client-overdue"><strong>{overdue.length} parcela(s) em atraso</strong><span>{money.format(overdue.reduce((s,p)=>s+Number(p.amount??0),0))} pendente</span></div>}</section>
+ <section className="client-list-card client-history-card"><div className="list-heading"><div><p className="eyebrow">CONSÓRCIOS</p><h2>Participação do cliente</h2></div><strong>{groups.length}</strong></div>{groups.length===0?<div className="empty-clients"><Users size={30}/><strong>Sem consórcios</strong><span>Este cliente ainda não participa de nenhuma turma.</span></div>:<div className="client-group-list">{groups.map(m=>{const inst=[...(m.installments??[])].sort((a:any,b:any)=>a.installment_number-b.installment_number),paidCount=inst.filter((p:any)=>p.status==='PAGA').length,next=inst.find((p:any)=>p.status!=='PAGA'&&p.status!=='ESTORNADA');return <Link href={`/consorcios/${m.consortia?.id}`} className="client-group-card" key={m.id}><div><span className={`consortium-status status-${String(m.consortia?.status??'ATIVO').toLowerCase()}`}>{m.consortia?.status??'ATIVO'}</span><strong>{m.consortia?.name}</strong><small>{paidCount}/{inst.length} parcelas pagas</small></div><div className="client-group-side"><b>{money.format(Number(m.consortia?.installment_amount??0))}</b><span>{next?`Próx. ${new Date(next.due_date+'T12:00:00').toLocaleDateString('pt-BR')}`:'Quitado'}</span></div></Link>})}</div>}</section>
+ <section className="client-form-card profile-card"><div className="form-heading"><div><p className="eyebrow">DADOS CADASTRAIS</p><h2>Editar cliente</h2></div></div><form action={atualizarClienteAction} className="client-form"><input type="hidden" name="id" value={cliente.id}/><label className="photo-field">{cliente.avatar_url?<img src={cliente.avatar_url} className="profile-avatar" alt=""/>:<div className="avatar-placeholder large"><UserRound size={42}/><span className="camera-badge"><Camera size={14}/></span></div>}<div><strong>Foto de perfil</strong><small>Fotos grandes são otimizadas automaticamente.</small><AvatarFileInput/></div></label><div className="form-grid"><label><span>Nome *</span><input name="nome" required defaultValue={cliente.name}/></label><label><span>Telefone *</span><input name="telefone" required defaultValue={phone(cliente.phone)}/></label><label><span>CPF</span><input name="cpf" defaultValue={cliente.cpf??''}/></label><label><span>Tags</span><input name="tags" defaultValue={(cliente.tags??[]).join(', ')}/></label><label className="full"><span>Endereço</span><input name="endereco" defaultValue={cliente.address??''}/></label><label className="toggle-line"><input name="active" type="checkbox" defaultChecked={cliente.active}/><span>Cliente ativo</span></label></div><button className="primary save-client" type="submit">Salvar alterações</button></form></section>
+ </div></main>
 }
