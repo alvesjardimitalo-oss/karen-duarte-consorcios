@@ -1,0 +1,1 @@
+'use client';import{useEffect}from'react';import{Printer}from'lucide-react';import{PosReceipt}from'../../pos-receipt';export function ReceiptReprint({sale,autoPrint}:{sale:any;autoPrint:boolean}){useEffect(()=>{if(autoPrint){const t=setTimeout(()=>window.print(),300);return()=>clearTimeout(t)}},[autoPrint]);return <PosReceipt sale={sale} onClose={()=>history.back()}/>} 
