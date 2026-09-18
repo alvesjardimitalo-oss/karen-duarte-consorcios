@@ -20,6 +20,8 @@ export async function atualizarMeuPerfilAction(formData: FormData) {
     const {error}=await supabase.storage.from('avatars').upload(path,bytes,{contentType:foto.type,cacheControl:'3600'});
     if(error) throw new Error(`Falha ao enviar foto: ${error.message}`);
     avatarUrl=supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+    const {error:avatarError}=await supabase.from('profiles').update({avatar_url:avatarUrl}).eq('id',user.id);
+    if(avatarError) throw new Error(`Foto enviada, mas não foi possível vinculá-la ao perfil: ${avatarError.message}`);
   }
   const {error}=await supabase.from('profiles').update({name,phone:phone||null,avatar_url:avatarUrl||null}).eq('id',user.id);
   if(error) throw error;
