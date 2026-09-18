@@ -10,3 +10,4 @@ export async function salvarProntaEntregaAction(formData:FormData){
  if(error)throw new Error(error.message);
  revalidatePath('/estoque');revalidatePath('/financeiro');
 }
+export async function entradaManualEstoqueAction(formData:FormData){const{supabase}=await requireStaff();const product=String(formData.get('product_id')??''),quantity=Number(formData.get('quantity')??0),cost=Number(String(formData.get('unit_cost')??'0').replace(',','.')),notes=String(formData.get('notes')??'');if(!product||quantity<=0||cost<0)throw new Error('Informe produto, quantidade e custo.');const{error}=await supabase.rpc('add_manual_inventory',{p_product:product,p_quantity:quantity,p_unit_cost:cost,p_notes:notes||null});if(error)throw new Error(error.message);revalidatePath('/estoque');revalidatePath('/financeiro');}
