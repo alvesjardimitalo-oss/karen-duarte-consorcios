@@ -120,3 +120,29 @@
  .order-item,.payment-total{gap:8px!important}
  .voucher-ledger-card{padding:13px!important}
 }
+
+/* Client portal V6 — cohesive mobile navigation and hierarchy */
+@media(max-width:520px){
+ .client-portal{background:linear-gradient(180deg,#fff7fa 0%,#fff 44%,#fff7fa 100%)!important}
+ .client-portal .portal-wrap{padding:16px 12px 34px!important}
+ .client-portal .back-link{display:inline-flex!important;width:max-content!important;color:#b51450!important;font-weight:800!important;text-decoration:none!important;margin:0 0 12px!important}
+ .client-portal .clients-header{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;margin-bottom:14px!important}
+ .client-portal .clients-header h1{font-size:27px!important;line-height:1.08!important;margin:3px 0 6px!important}
+ .client-portal .clients-header>.primary{width:100%!important;min-height:46px!important;justify-content:center!important;text-align:center!important}
+ .client-portal .portal-summary .portal-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .client-portal .portal-summary .portal-card{padding:13px!important;min-height:132px!important}
+ .client-portal .portal-summary .portal-card svg{width:20px!important;height:20px!important}
+ .client-portal .portal-summary .portal-card>span{font-size:11px!important}
+ .client-portal .portal-summary .portal-card>strong{font-size:18px!important;line-height:1.1!important}
+ .client-portal .portal-summary .portal-card>p{font-size:10px!important;line-height:1.35!important}
+ .client-portal .stats{grid-template-columns:1fr 1fr!important;gap:9px!important}
+ .client-portal .stat{display:grid!important;grid-template-columns:1fr!important;gap:4px!important;min-height:92px!important;padding:13px!important}
+ .client-portal .stat strong{font-size:20px!important}
+ .client-portal .member-card{display:grid!important;grid-template-columns:42px minmax(0,1fr)!important;align-items:center!important}
+ .client-portal .member-installments{grid-column:2!important;margin:4px 0 0!important;text-align:left!important;white-space:normal!important}
+ .client-portal .order-item,.client-portal .payment-total{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:start!important}
+ .client-portal .voucher-balance{display:grid!important;grid-template-columns:1fr!important;gap:6px!important}
+ .client-portal .voucher-moves>div{display:grid!important;grid-template-columns:1fr auto!important;gap:4px 8px!important}
+ .client-portal .voucher-moves small{grid-column:1/-1!important}
+}
+@media(max-width:360px){.client-portal .portal-summary .portal-grid,.client-portal .stats{grid-template-columns:1fr!important}}
