@@ -55,7 +55,7 @@ export default function LoginPage() {
       const supabase = createClient();
       const { error: requestError } = await supabase.rpc('request_client_access', { p_phone: phone });
       if (requestError) throw requestError;
-      setMessage('Se o telefone estiver apto para primeiro acesso, a solicitação será encaminhada para aprovação.');
+      setMessage('Solicitação enviada. Seu cadastro está aguardando aprovação da administração. Assim que for aprovado, você receberá um código de 6 dígitos para ativar sua conta.');
       setActivationMode(true);
     } catch {
       setError('Não foi possível solicitar o acesso agora.');
