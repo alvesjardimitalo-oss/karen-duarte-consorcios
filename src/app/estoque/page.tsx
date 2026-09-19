@@ -1,10 +1,10 @@
 import{Boxes,Eye,EyeOff,PackageCheck,TrendingUp}from'lucide-react';
-import{requireStaff}from'@/modules/auth/session';
+import{requireAdminManager}from'@/modules/auth/session';
 import{StaffNav}from'@/components/staff-nav';
 import{salvarProntaEntregaAction,entradaManualEstoqueAction}from'./actions';
 const money=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
 export default async function Estoque(){
- const{supabase,profile}=await requireStaff();
+ const{supabase,profile}=await requireAdminManager();
  const[{data},{data:catalog}]=await Promise.all([supabase.from('inventory_lots').select('id,quantity_received,quantity_available,reserved_quantity,unit_cost,received_at,source_type,notes,purchase_order_items(id,purchase_orders(order_number,supplier_name),purchase_order_allocations(quantity,received_quantity,customer_order_items(id,description,customer_orders(id,receipt_number,clients(name))))),products(id,sku,name,brand,image_url),ready_stock(sale_price,visible)').gt('quantity_available',0).order('received_at',{ascending:false}),supabase.from('products').select('id,sku,name,brand').eq('active',true).order('name')]);
  const lots=(data??[])as any[],qty=lots.reduce((s,x)=>s+Number(x.quantity_available),0),reserved=lots.reduce((s,x)=>s+Number(x.reserved_quantity||0),0),cost=lots.reduce((s,x)=>s+(Number(x.quantity_available)+Number(x.reserved_quantity||0))*Number(x.unit_cost),0);
  const grouped=new Map<string,any>();
