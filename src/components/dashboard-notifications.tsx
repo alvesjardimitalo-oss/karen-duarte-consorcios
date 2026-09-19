@@ -16,7 +16,7 @@ export function DashboardNotifications({pendingAccess,newClients24h}:Props){
   {open&&<div className="notification-popover">
    <div className="notification-popover-head"><div><p className="eyebrow">NOTIFICAÇÕES</p><strong>Central de avisos</strong></div><span>{count}</span></div>
    <div className="notification-list">
-    {pendingAccess>0&&<Link href="/clientes#solicitacoes-acesso" className="notification-item" onClick={()=>setOpen(false)}><span className="notification-item-icon"><ShieldCheck size={18}/></span><span><strong>Solicitação de acesso</strong><small>{pendingAccess} cliente{pendingAccess===1?'':'s'} aguardando aprovação</small><b>Ver e aprovar</b></span></Link>}
+    {pendingAccess>0&&<Link href="/clientes/solicitacoes" className="notification-item" onClick={()=>setOpen(false)}><span className="notification-item-icon"><ShieldCheck size={18}/></span><span><strong>Solicitação de acesso</strong><small>{pendingAccess} cliente{pendingAccess===1?'':'s'} aguardando aprovação</small><b>Ver e aprovar</b></span></Link>}
     {newClients24h>0&&<Link href="/clientes" className="notification-item" onClick={()=>setOpen(false)}><span className="notification-item-icon"><UserPlus size={18}/></span><span><strong>Novo cliente cadastrado</strong><small>{newClients24h} cadastro{newClients24h===1?'':'s'} nas últimas 24 horas</small><b>Ver clientes</b></span></Link>}
     {count===0&&<div className="notification-empty">Nenhuma notificação nova.</div>}
    </div>
