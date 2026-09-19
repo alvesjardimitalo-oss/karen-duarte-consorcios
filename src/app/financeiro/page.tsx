@@ -1,4 +1,4 @@
-import{ArrowDownCircle,ArrowUpCircle,CalendarClock,CircleDollarSign,Landmark,TriangleAlert,WalletCards}from'lucide-react';
+import Link from'next/link';import{ArrowDownCircle,ArrowUpCircle,CalendarClock,CircleDollarSign,Landmark,TriangleAlert,WalletCards}from'lucide-react';
 import{requireStaff}from'@/modules/auth/session';
 import{StaffNav}from'@/components/staff-nav';
 
@@ -24,7 +24,7 @@ export default async function Financeiro(){
  const periodSales=(sales??[])as any[],monthSales=periodSales.filter(x=>x.delivered_at&&String(x.delivered_at).slice(0,10)>=monthStart&&String(x.delivered_at).slice(0,10)<nextMonth),monthReturns=periodSales.filter(x=>x.returned_at&&String(x.returned_at).slice(0,10)>=monthStart&&String(x.returned_at).slice(0,10)<nextMonth),cashSales=paymentRows.reduce((s,x)=>s+n(x.amount),0),grossSalesRevenue=monthSales.reduce((s,x)=>s+n(x.subtotal),0),returnedRevenue=monthReturns.reduce((s,x)=>s+n(x.subtotal),0),salesRevenue=grossSalesRevenue-returnedRevenue,voucherSales=monthSales.reduce((s,x)=>s+n(x.voucher_amount),0),grossCogs=monthSales.reduce((s,x)=>s+(x.customer_order_items??[]).reduce((a:any,i:any)=>a+n(i.inventory_cost),0),0),returnedCogs=monthReturns.reduce((s,x)=>s+(x.customer_order_items??[]).reduce((a:any,i:any)=>a+n(i.inventory_cost),0),0),cogs=grossCogs-returnedCogs,grossMargin=salesRevenue-cogs;const voucherFace=vs.reduce((s,x)=>s+n(x.original_credit),0),voucherAvailable=vs.reduce((s,x)=>s+n(x.available_balance),0),voucherReserved=vs.reduce((s,x)=>s+n(x.reserved_balance),0);
  const next=[...receivable.map(x=>({...x,type:'RECEBER'})),...saleReceivable.map(x=>({...x,type:'VENDA'})),...openPay.map(x=>({...x,type:'PAGAR'}))].sort((a,b)=>a.due_date.localeCompare(b.due_date)).slice(0,12);
  return <><StaffNav profile={profile} active="financeiro"/><main className="clients-page with-app-nav"><div className="clients-wrap">
-  <header className="clients-header"><div><p className="eyebrow">CENTRAL FINANCEIRA</p><h1>Financeiro</h1><p className="muted">Caixa, compromissos, recebimentos e vouchers separados para não confundir crédito do cliente com dinheiro da operação.</p></div></header>
+  <header className="clients-header"><div><p className="eyebrow">CENTRAL FINANCEIRA</p><h1>Financeiro</h1><p className="muted">Caixa, compromissos, recebimentos e vouchers separados para não confundir crédito do cliente com dinheiro da operação.</p></div><Link href="/financeiro/caixa" className="primary">Abrir painel do caixa</Link></header>
   <div className="stats">
    <article className="stat"><div className="stat-icon"><ArrowUpCircle/></div><span>A receber</span><strong>{money.format(r)}</strong><small>{receivable.length} consórcio · {saleReceivable.length} vendas</small></article>
    <article className="stat"><div className="stat-icon"><ArrowDownCircle/></div><span>A pagar</span><strong>{money.format(p)}</strong><small>{openPay.length} compromissos</small></article>
