@@ -76,8 +76,19 @@ export default function LoginPage() {
     try {
       const supabase = createClient();
       const { data, error: invokeError } = await supabase.functions.invoke('activate-client-account', { body: { phone: normalizePhone(identifier), code, password: newPassword } });
-      if (invokeError) throw invokeError;
-      if (data?.error) throw new Error(data.error);
+      if (invokeError) {
+        const response = (invokeError as any)?.context;
+        if (response && typeof response.json === 'function') {
+          try {
+            const detail = await response.json();
+            throw new Error(detail?.stage ? `${detail.error ?? 'Falha na ativação'} (${detail.stage})` : detail?.error ?? invokeError.message);
+          } catch (parsed) {
+            if (parsed instanceof Error && parsed.message !== invokeError.message) throw parsed;
+          }
+        }
+        throw new Error(invokeError.message || 'Não foi possível concluir a ativação.');
+      }
+      if (data?.error) throw new Error(data?.stage ? `${data.error} (${data.stage})` : data.error);
       const { error: loginError } = await supabase.auth.signInWithPassword({ phone: normalizePhone(identifier), password: newPassword });
       if (loginError) throw loginError;
       router.replace('/portal'); router.refresh();
