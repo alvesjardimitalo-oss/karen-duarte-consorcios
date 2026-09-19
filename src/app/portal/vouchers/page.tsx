@@ -11,7 +11,7 @@ export default async function PortalVouchers(){
   if(!user)return <main className="client-portal"><div className="portal-wrap"><Link className="primary" href="/login">Entrar</Link></div></main>;
   const {data:client}=await supabase.from('clients').select('id,name').eq('profile_id',user.id).maybeSingle();
   if(!client)return <main className="client-portal"><div className="portal-wrap"><h1>Cadastro não vinculado</h1></div></main>;
-  const {data}=await supabase.from('vouchers').select('id,code,original_credit,available_balance,reserved_balance,status,created_at,contemplations!inner(consortium_members!inner(client_id)),voucher_transactions(id,type,amount,balance_after,created_at,customer_orders(receipt_number))').eq('contemplations.consortium_members.client_id',client.id).order('created_at',{ascending:false});
+  const {data}=await supabase.from('vouchers').select('id,code,original_credit,available_balance,reserved_balance,status,created_at,voucher_transactions(id,type,amount,balance_after,created_at,customer_orders(receipt_number))').eq('client_id',client.id).order('created_at',{ascending:false});
   const rows=(data??[]) as any[];
   const issued=rows.reduce((s,v)=>s+Number(v.original_credit||0),0),available=rows.reduce((s,v)=>s+Number(v.available_balance||0),0);
   return <main className="client-portal"><div className="portal-wrap">
