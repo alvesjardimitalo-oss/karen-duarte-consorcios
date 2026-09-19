@@ -28,3 +28,5 @@ export async function criarPedidoCompraAction(formData:FormData){
  revalidatePath('/compras');revalidatePath('/financeiro');revalidatePath('/estoque');revalidatePath('/pedidos/historico');
 }
 export async function receberPedidoCompraAction(formData:FormData){const{supabase}=await requireStaff();const id=String(formData.get('id'));const{error}=await supabase.rpc('receive_purchase_order',{p_order:id});if(error)throw new Error(error.message);revalidatePath('/compras');revalidatePath('/estoque');revalidatePath('/pedidos');revalidatePath('/pedidos/historico');revalidatePath('/portal/meus-pedidos');revalidatePath('/financeiro');}
+
+export async function pagarContaFornecedorAction(formData:FormData){const{supabase}=await requireStaff();const id=String(formData.get('id')??''),method=String(formData.get('method')??'PIX');if(!id)throw new Error('Conta inválida.');const{error}=await supabase.rpc('pay_account_payable',{p_payable:id,p_method:method,p_amount:null});if(error)throw new Error(error.message);revalidatePath('/compras');revalidatePath('/financeiro');}
