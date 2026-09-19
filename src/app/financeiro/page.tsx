@@ -1,5 +1,5 @@
 import Link from'next/link';import{ArrowDownCircle,ArrowUpCircle,CalendarClock,CircleDollarSign,Landmark,TriangleAlert,WalletCards}from'lucide-react';
-import{requireStaff}from'@/modules/auth/session';
+import{requireAdminManager}from'@/modules/auth/session';
 import{StaffNav}from'@/components/staff-nav';import{baixarContaFornecedorAction,baixarParcelaVendaAction}from'./actions';
 
 const money=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
@@ -7,7 +7,7 @@ const date=(v:string)=>new Date(v+'T12:00:00').toLocaleDateString('pt-BR');
 const n=(v:any)=>Number(v??0);
 
 export default async function Financeiro(){
- const{supabase,profile}=await requireStaff();
+ const{supabase,profile}=await requireAdminManager();
  const today=new Date(),todayKey=today.toISOString().slice(0,10),monthStart=new Date(today.getFullYear(),today.getMonth(),1).toISOString().slice(0,10),nextMonth=new Date(today.getFullYear(),today.getMonth()+1,1).toISOString().slice(0,10);
  const[{data:pay},{data:rec},{data:paidRec},{data:orders},{data:vouchers},{data:sales},{data:saleDebts},{data:saleDebtPaid},{data:salePayments},{data:cashExpenses}]=await Promise.all([
   supabase.from('accounts_payable').select('id,supplier_name,description,due_date,amount,status,paid_at,paid_amount,payment_method').order('due_date'),
