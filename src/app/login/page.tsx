@@ -55,13 +55,10 @@ export default function LoginPage() {
       const supabase = createClient();
       const { error: requestError } = await supabase.rpc('request_client_access', { p_phone: phone });
       if (requestError) throw requestError;
-      setMessage('Solicitação enviada. Após a aprovação, use o código fornecido pela administração.');
+      setMessage('Se o telefone estiver apto para primeiro acesso, a solicitação será encaminhada para aprovação.');
       setActivationMode(true);
-    } catch (requestError) {
-      const detail = requestError instanceof Error ? requestError.message : String(requestError);
-      if (detail.includes('Conta já ativada')) setError('Sua conta já está ativada. Entre com telefone e senha.');
-      else if (detail.includes('Cadastro não localizado')) setError('Não encontramos um cadastro ativo com esse telefone.');
-      else setError('Não foi possível solicitar o acesso agora.');
+    } catch {
+      setError('Não foi possível solicitar o acesso agora.');
     } finally { setRequesting(false); }
   }
 
@@ -90,7 +87,7 @@ export default function LoginPage() {
       const {error}=await supabase.rpc('request_client_password_reset',{p_phone:normalizePhone(identifier)});
       if(error) throw error;
       setResetMode(true); setActivationMode(false);
-      setMessage('Solicitação enviada. Após a aprovação, informe o código recebido e sua nova senha.');
+      setMessage('Se houver uma conta ativa para este telefone, a solicitação será encaminhada para aprovação.');
     } catch { setError('Não foi possível solicitar a recuperação para este telefone.'); }
   }
 
