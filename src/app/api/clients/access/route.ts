@@ -16,6 +16,8 @@ export async function POST(req:NextRequest){
  const {data:client,error}=await admin.from('clients').select('id,name,phone,profile_id').eq('id',clientId).maybeSingle();
  if(error||!client)return NextResponse.json({error:'Cliente não encontrado.'},{status:404});
  const phone=digits(client.phone),authPhone='+55'+phone,password=makePassword();
+ const {data:phoneProfile}=await admin.from('profiles').select('id,role').eq('phone',phone).maybeSingle();
+ if(phoneProfile&&phoneProfile.id!==client.profile_id&&phoneProfile.role!=='CLIENTE')return NextResponse.json({error:'Este telefone já pertence a um acesso administrativo. Use outro telefone no cadastro do cliente para criar um acesso separado.'},{status:409});
  let uid=client.profile_id as string|null;
  if(uid){
    const {data:u,error:e}=await admin.auth.admin.getUserById(uid);
