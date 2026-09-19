@@ -125,7 +125,7 @@ export default function LoginPage() {
   return (
     <main className="login-page">
       <section className="login-card">
-        <div className="login-brand"><div className="butterfly">♡</div><strong>Karen Martins</strong><span>COSMÉTICOS • CONSÓRCIOS</span></div>
+        <div className="login-brand"><img src="/karen-martins-logo.svg" alt="Karen Martins Cosméticos e Consórcios" className="official-login-logo"/></div>
         <div><p className="eyebrow">ÁREA SEGURA</p><h1>Bem-vinda!</h1><p className="muted">Entre para acompanhar turmas, parcelas, sorteios e contemplações.</p></div>
         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
           <button type="button" className={mode==='cliente'?'primary':'secondary'} onClick={()=>changeMode('cliente')}>Sou cliente</button>
