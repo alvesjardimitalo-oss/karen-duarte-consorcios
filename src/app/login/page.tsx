@@ -55,7 +55,14 @@ export default function LoginPage() {
       const supabase = createClient();
       const { data: requestState, error: requestError } = await supabase.rpc('request_client_access', { p_phone: phone });
       if (requestError) throw requestError;
-      setMessage(requestState === 'PENDING' ? 'Já existe uma liberação em andamento para este telefone. Aguarde a aprovação da administração e o recebimento do seu código de liberação.' : 'Sua solicitação de inscrição na plataforma foi enviada. Aguarde a aprovação da administração e o recebimento do código para efetuar a liberação.');
+      if (requestState === 'PENDING') {
+        setMessage('Já existe uma liberação em andamento para este telefone. Se você já recebeu o código, informe-o abaixo e crie sua senha. Caso ainda não tenha recebido, aguarde a aprovação da administração.');
+      } else {
+        setMessage('Sua solicitação de inscrição na plataforma foi enviada. Aguarde a aprovação da administração e o recebimento do código. Quando receber, informe-o abaixo e crie sua senha.');
+      }
+      setResetMode(false);
+      setCode('');
+      setNewPassword('');
       setActivationMode(true);
     } catch {
       setError('Não foi possível solicitar o acesso agora.');
