@@ -18,6 +18,12 @@ export async function requireStaff() {
   return session;
 }
 
+export async function requireAdminManager() {
+  const session=await requireSession();
+  if(!['SUPER_ADMIN','ADMIN'].includes(session.profile.role)) redirect('/');
+  return session;
+}
+
 export async function requireClient() {
   const session = await requireSession();
   const { data: client, error } = await session.supabase
