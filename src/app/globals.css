@@ -292,3 +292,17 @@ select,textarea{font:inherit}.clients-page select,.clients-page textarea,.conten
 .notification-item>span:last-child{display:grid;gap:3px}.notification-item small{color:#7b6870}.notification-item b{font-size:11px;color:#c2185b}
 .notification-empty{padding:20px 14px;color:#7b6870;text-align:center}
 @media(max-width:640px){.notification-popover{position:fixed;top:76px;right:12px;left:12px;width:auto}}
+
+
+/* Compact access approval queue */
+.access-admin-panel{padding:16px 18px}
+.access-admin-title{margin-bottom:10px}
+.access-admin-title h2{font-size:19px}
+.access-request-list .list-heading{padding:11px 14px}
+.access-request-list .list-heading h2{font-size:17px;margin:2px 0}
+.access-request-list>div:last-child{gap:0!important;padding:0 14px!important}
+.access-request-list>div:last-child>div{min-height:58px;padding:8px 0!important}
+.access-request-list>div:last-child>div>div:first-child strong{font-size:14px}
+.access-request-list>div:last-child .muted{font-size:11px;line-height:1.25}
+.access-request-list button{min-height:36px;padding:7px 11px;font-size:11px}
+@media(max-width:640px){.access-admin-panel{padding:12px}.access-request-list>div:last-child>div{align-items:flex-start!important}.access-request-list>div:last-child>div>div:last-child{width:100%;display:grid!important;grid-template-columns:1fr 2fr}.access-request-list button{width:100%}}
