@@ -8,11 +8,10 @@ export async function salvarProdutoAction(formData:FormData){
  const{supabase}=await requireAdminManager(); const id=String(formData.get('id')??'').trim();
  const sku=String(formData.get('sku')??'').replace(/\\D/g,''),name=String(formData.get('name')??'').trim(),brand=String(formData.get('brand')??'').trim();
  if(!sku||!name||!brand)throw new Error('Código numérico, produto e marca são obrigatórios.');
- const payload={sku,source_code:String(formData.get('source_code')??sku).trim()||sku,name,brand,category:String(formData.get('category')??'').trim()||null,description:String(formData.get('description')??'').trim()||null,image_url:String(formData.get('image_url')??'').trim()||null,image_status:String(formData.get('image_url')??'').trim()?'VERIFIED':'PENDING',image_checked_at:String(formData.get('image_url')??'').trim()?new Date().toISOString():null,active:true,updated_at:new Date().toISOString()};
- const q=id?supabase.from('products').update(payload).eq('id',id):supabase.from('products').insert({...payload,price:0,sale_price:null,cost_price:null});
- const{error}=await q;if(error)throw new Error(error.message);revalidatePath('/compras');
+ const imageUrl=String(formData.get('image_url')??'').trim()||null;
+ const{error}=await supabase.rpc('save_product',{p_id:id||null,p_sku:sku,p_name:name,p_brand:brand,p_category:String(formData.get('category')??'').trim()||null,p_description:String(formData.get('description')??'').trim()||null,p_image_url:imageUrl,p_price:id?null:0,p_sale_price:null,p_active:true,p_source_code:String(formData.get('source_code')??sku).trim()||sku,p_image_source_url:null,p_image_status:imageUrl?'VERIFIED':'PENDING'});if(error)throw new Error(error.message);revalidatePath('/compras');
 }
-export async function alternarProdutoAction(formData:FormData){const{supabase}=await requireAdminManager();const id=String(formData.get('id')),active=String(formData.get('active'))==='true';const{error}=await supabase.from('products').update({active:!active,updated_at:new Date().toISOString()}).eq('id',id);if(error)throw new Error(error.message);revalidatePath('/compras');}
+export async function alternarProdutoAction(formData:FormData){const{supabase}=await requireAdminManager();const id=String(formData.get('id')),active=String(formData.get('active'))==='true';const{error}=await supabase.rpc('set_product_active',{p_id:id,p_active:!active});if(error)throw new Error(error.message);revalidatePath('/compras');}
 
 export async function criarPedidoCompraAction(formData:FormData){
  const{supabase,profile}=await requireAdminManager();
