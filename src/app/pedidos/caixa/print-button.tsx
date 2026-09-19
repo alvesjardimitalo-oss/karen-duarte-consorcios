@@ -1,0 +1,1 @@
+'use client';import{Printer}from'lucide-react';export function CashPrintButton(){return <button className="primary no-print" onClick={()=>window.print()}><Printer size={16}/>Imprimir fechamento 80 mm</button>}
