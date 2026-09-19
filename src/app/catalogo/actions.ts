@@ -1,27 +1,15 @@
 'use server';
-import{revalidatePath}from'next/cache';import{requireStaff}from'@/modules/auth/session';
+import{revalidatePath}from'next/cache';import{requireStaff}from'@/modules/auth/session';import{runCatalogSync,type CatalogSyncMode}from'@/modules/catalog/sync-service';
 const allowed=['Natura','O Boticário','Eudora','Quem Disse, Berenice?','O.U.i'];
 const officialDomains:Record<string,string>={'Natura':'natura.com.br','O Boticário':'boticario.com.br','Eudora':'eudora.com.br','Quem Disse, Berenice?':'quemdisseberenice.com.br','O.U.i':'ouiparis.com'};
 function isOfficialSource(brand:string|null,url:string){if(!brand||!url)return false;try{const host=new URL(url).hostname.toLowerCase().replace(/^www\./,'');const domain=officialDomains[brand];return !!domain&&(host===domain||host.endsWith('.'+domain))}catch{return false}}
 export async function catalogQueueAction(formData:FormData){
   const{profile}=await requireStaff();
   if(!['SUPER_ADMIN','ADMIN'].includes(profile.role))return{ok:false,message:'Somente administradores podem executar a sincronização.'};
-  const mode=String(formData.get('mode')||'process');
-  const source=String(formData.get('source')||'');
+  const mode=String(formData.get('mode')||'process');const source=String(formData.get('source')||'');
   if(!['discover','repair','process'].includes(mode))return{ok:false,message:'Operação inválida.'};
   if(source&&!allowed.includes(source))return{ok:false,message:'Marca inválida.'};
-  const base=process.env.NEXT_PUBLIC_APP_URL||(process.env.VERCEL_PROJECT_PRODUCTION_URL?'https://'+process.env.VERCEL_PROJECT_PRODUCTION_URL:'');
-  const secret=process.env.CRON_SECRET;
-  if(!base||!secret)return{ok:false,message:'Sincronização não configurada no servidor.'};
-  try{
-    const u=new URL('/api/products/sync',base);u.searchParams.set('mode',mode);if(source)u.searchParams.set('source',source);
-    const r=await fetch(u,{headers:{authorization:'Bearer '+secret},cache:'no-store'});const body=await r.json();
-    if(!r.ok)return{ok:false,message:body?.error||'Falha ao sincronizar catálogo.'};
-    revalidatePath('/catalogo');revalidatePath('/compras');
-    if(mode==='discover')return{ok:true,message:'Descoberta concluída: '+(body.discovered??0)+' URLs encontradas.'};
-    const prefix=mode==='repair'?'Reparo seguro: ':'Lote concluído: ';
-    return{ok:true,message:prefix+(body.processed??0)+' processados, '+(body.inserted??0)+' novos, '+(body.updated??0)+' atualizados, '+(body.errors??0)+' erros.'};
-  }catch(e:any){return{ok:false,message:String(e?.message||e)}}
+  try{const body:any=await runCatalogSync(mode as CatalogSyncMode,source);revalidatePath('/catalogo');revalidatePath('/compras');if(mode==='discover'){const detail=body.bySource?Object.entries(body.bySource).map(([k,v])=>k+': '+v).join(' · '):'';return{ok:true,message:'Descoberta concluída: '+(body.discovered??0)+' URLs encontradas.'+(detail?' '+detail:'')}}const prefix=mode==='repair'?'Reparo seguro: ':'Lote concluído: ';return{ok:true,message:prefix+(body.processed??0)+' processados, '+(body.inserted??0)+' novos, '+(body.updated??0)+' atualizados, '+(body.errors??0)+' erros.'}}catch(e:any){return{ok:false,message:String(e?.message||e)}}
 }
 
 export async function updateCatalogProductAction(formData:FormData){const{supabase,profile}=await requireStaff();if(!['SUPER_ADMIN','ADMIN'].includes(profile.role))return{ok:false,message:'Somente administradores podem editar produtos.'};const id=String(formData.get('id')||''),name=String(formData.get('name')||'').trim(),sku=String(formData.get('sku')||'').replace(/\D/g,''),source_code=String(formData.get('source_code')||'').trim()||null,brand=String(formData.get('brand')||'').trim()||null,category=String(formData.get('category')||'Não classificado').trim(),image_url=String(formData.get('image_url')||'').trim()||null,image_source_url=String(formData.get('image_source_url')||'').trim()||null,price=Number(String(formData.get('price')||'0').replace(',','.')),active=String(formData.get('active'))==='true';if(!id||!name||!sku)return{ok:false,message:'Nome e SKU numérico são obrigatórios.'};if(!Number.isFinite(price)||price<0)return{ok:false,message:'Preço inválido.'};if(image_url){try{const u=new URL(image_url);if(!['http:','https:'].includes(u.protocol))throw 0}catch{return{ok:false,message:'URL da imagem inválida.'}}}if(image_source_url&&!isOfficialSource(brand,image_source_url))return{ok:false,message:'A fonte da imagem precisa pertencer ao site oficial da marca.'};const verifiedImage=!!image_url&&isOfficialSource(brand,image_source_url||'');const now=new Date().toISOString();const{error}=await supabase.from('products').update({name,sku,source_code,brand,category,price,sale_price:price,active,image_url,image_status:verifiedImage?'VERIFIED':'PENDING',image_source_url:image_url?image_source_url:null,image_checked_at:image_url?now:null,updated_at:now}).eq('id',id);if(error)return{ok:false,message:error.code==='23505'?'Este SKU já está sendo usado por outro produto.':error.message};revalidatePath('/catalogo');revalidatePath('/pedidos');revalidatePath('/compras');return{ok:true,message:'Produto atualizado.'}}
