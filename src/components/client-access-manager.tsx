@@ -8,7 +8,7 @@ export function ClientAccessManager({clientId,hasAccess}:{clientId:string;hasAcc
   setLoading(true);setError('');
   try{
    const r=await fetch('/api/clients/access',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({clientId})});
-   const d=await r.json();if(!r.ok)throw new Error(d.error||'Falha ao gerar acesso.');
+   const raw=await r.text();let d:any={};try{d=raw?JSON.parse(raw):{}}catch{d={}};if(!r.ok)throw new Error(d.error||`Falha ao gerar acesso (HTTP ${r.status}).`);if(!raw)throw new Error('O servidor não retornou os dados do acesso. Atualize a página e tente novamente.');
    setCredentials(d);
   }catch(e){setError(e instanceof Error?e.message:'Falha ao gerar acesso.')}finally{setLoading(false)}
  }
