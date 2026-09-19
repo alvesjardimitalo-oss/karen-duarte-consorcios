@@ -32,6 +32,7 @@ export async function atualizarClienteAction(formData:FormData) {
   if(['SUPER_ADMIN','ADMIN'].includes(profile.role)) update.active=formData.get('active')==='on';
   if(avatarUrl) update.avatar_url=avatarUrl;
   if(update.name.length<2||update.phone.length<10) throw new Error('Nome e telefone são obrigatórios.');
-  const { error }=await supabase.from('clients').update(update).eq('id',id); if(error) throw error;
-  revalidatePath('/clientes'); revalidatePath(`/clientes/${id}`); revalidatePath('/'); redirect(`/clientes/${id}`);
+  const { error }=await supabase.from('clients').update(update).eq('id',id);
+  if(error) redirect(`/clientes/${id}?erro=${encodeURIComponent(error.code==='23505'?'Este telefone já está cadastrado em outro cliente.':'Não foi possível salvar as alterações do cliente.')}`);
+  revalidatePath('/clientes'); revalidatePath(`/clientes/${id}`); revalidatePath('/'); redirect(`/clientes/${id}?salvo=1`);
 }
