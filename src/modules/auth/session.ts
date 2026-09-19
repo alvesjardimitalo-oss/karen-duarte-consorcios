@@ -14,7 +14,7 @@ export async function requireSession() {
 
 export async function requireStaff() {
   const session=await requireSession();
-  if(!['SUPER_ADMIN','ADMIN','RECEBEDOR'].includes(session.profile.role)) redirect('/cliente');
+  if(!['SUPER_ADMIN','ADMIN','RECEBEDOR'].includes(session.profile.role)) redirect('/portal');
   return session;
 }
 
