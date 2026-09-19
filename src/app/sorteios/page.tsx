@@ -1,10 +1,10 @@
 import { CalendarDays, CheckCircle2, Clock3, Trophy, Users } from 'lucide-react';
-import { requireStaff } from '@/modules/auth/session';
+import { requireAdminManager } from '@/modules/auth/session';
 import { StaffNav } from '@/components/staff-nav';
 import { criarSorteioAction, concluirSorteioAction } from './actions';
 
 export default async function SorteiosPage() {
-  const { supabase, profile } = await requireStaff();
+  const { supabase, profile } = await requireAdminManager();
   const [{ data: consortia }, { data: draws }, { data: members }] = await Promise.all([
     supabase.from('consortia').select('id,name,status').in('status', ['FORMACAO', 'ATIVO']).order('name'),
     supabase.from('draws').select('id,consortium_id,draw_number,scheduled_for,completed_at,winner_member_id,consortia(name,credit_amount)').order('scheduled_for', { ascending: true }),
