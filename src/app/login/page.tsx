@@ -24,6 +24,7 @@ export default function LoginPage() {
   const [activationMode, setActivationMode] = useState(false);
   const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [resetMode, setResetMode] = useState(false);
 
   function changeMode(next: 'cliente' | 'admin') {
     setMode(next); setIdentifier(''); setPassword(''); setError(''); setMessage('');
@@ -82,6 +83,30 @@ export default function LoginPage() {
     } finally { setActivating(false); }
   }
 
+  async function requestClientReset() {
+    setError(''); setMessage('');
+    try {
+      const supabase=createClient();
+      const {error}=await supabase.rpc('request_client_password_reset',{p_phone:normalizePhone(identifier)});
+      if(error) throw error;
+      setResetMode(true); setActivationMode(false);
+      setMessage('Solicitação enviada. Após a aprovação, informe o código recebido e sua nova senha.');
+    } catch { setError('Não foi possível solicitar a recuperação para este telefone.'); }
+  }
+
+  async function completeClientReset() {
+    setError(''); setMessage('');
+    if(!/^[0-9]{6}$/.test(code)||newPassword.length<8){setError('Informe o código de 6 dígitos e uma senha com pelo menos 8 caracteres.');return;}
+    setActivating(true);
+    try{
+      const supabase=createClient();
+      const {error}=await supabase.rpc('complete_client_password_reset',{p_phone:normalizePhone(identifier),p_code:code,p_password:newPassword});
+      if(error)throw error;
+      setResetMode(false);setCode('');setNewPassword('');setMessage('Senha alterada. Você já pode entrar com a nova senha.');
+    }catch(e){setError(e instanceof Error?e.message:'Não foi possível redefinir a senha.');}
+    finally{setActivating(false);}
+  }
+
   async function handleRecovery() {
     setError(''); setMessage('');
     const normalizedEmail = identifier.trim();
@@ -116,7 +141,9 @@ export default function LoginPage() {
           <label>Senha<input type="password" autoComplete="current-password" value={password} onChange={(e)=>setPassword(e.target.value)} required minLength={6} placeholder="Sua senha" /></label>
           {mode === 'admin' && <button type="button" onClick={handleRecovery} disabled={recovering} style={{background:'none',border:0,padding:0,color:'#d6457d',fontWeight:700,textAlign:'right',cursor:'pointer'}}>{recovering?'Enviando...':'Esqueci minha senha'}</button>}
           {mode === 'cliente' && !activationMode && <button type="button" onClick={handleFirstAccess} disabled={requesting} style={{background:'none',border:0,padding:0,color:'#d6457d',fontWeight:700,textAlign:'right',cursor:'pointer'}}>{requesting?'Enviando solicitação...':'Primeiro acesso / Solicitar ativação'}</button>}
-          {mode === 'cliente' && <button type="button" onClick={()=>setActivationMode(v=>!v)} style={{background:'none',border:0,padding:0,color:'#6b7f67',fontWeight:700,textAlign:'right',cursor:'pointer'}}>{activationMode?'Voltar ao login':'Já tenho meu código de ativação'}</button>}
+          {mode === 'cliente' && !resetMode && <button type="button" onClick={()=>setActivationMode(v=>!v)} style={{background:'none',border:0,padding:0,color:'#6b7f67',fontWeight:700,textAlign:'right',cursor:'pointer'}}>{activationMode?'Voltar ao login':'Já tenho meu código de ativação'}</button>}
+          {mode === 'cliente' && !activationMode && !resetMode && <button type="button" onClick={requestClientReset} style={{background:'none',border:0,padding:0,color:'#6b7f67',fontWeight:700,textAlign:'right',cursor:'pointer'}}>Esqueci minha senha</button>}
+          {mode === 'cliente' && resetMode && <div style={{display:'grid',gap:10}}><label>Código de recuperação<input inputMode="numeric" maxLength={6} value={code} onChange={(e)=>setCode(e.target.value.replace(/\D/g,'').slice(0,6))} placeholder="000000" /></label><label>Nova senha<input type="password" autoComplete="new-password" minLength={8} value={newPassword} onChange={(e)=>setNewPassword(e.target.value)} placeholder="Mínimo de 8 caracteres" /></label><button type="button" className="primary" disabled={activating} onClick={completeClientReset}>{activating?'Alterando...':'Definir nova senha'}</button><button type="button" onClick={()=>setResetMode(false)}>Voltar</button></div>}
           {mode === 'cliente' && activationMode && <div style={{display:'grid',gap:10}}><label>Código de ativação<input inputMode="numeric" maxLength={6} value={code} onChange={(e)=>setCode(e.target.value.replace(/\D/g,'').slice(0,6))} placeholder="000000" /></label><label>Crie sua senha<input type="password" autoComplete="new-password" minLength={8} value={newPassword} onChange={(e)=>setNewPassword(e.target.value)} placeholder="Mínimo de 8 caracteres" /></label><button type="button" className="primary" disabled={activating} onClick={handleActivation}>{activating?'Ativando...':'Ativar minha conta'}</button></div>}
           {error && <p className="form-error" role="alert">{error}</p>}
           {message && <p role="status" style={{color:'#6b7f67',fontWeight:600}}>{message}</p>}
