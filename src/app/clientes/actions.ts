@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { redirect, RedirectType } from 'next/navigation';
 import { requireStaff, requireAdminManager } from '@/modules/auth/session';
 import { createClient as createAdminClient } from '@supabase/supabase-js';
 import { criarCliente } from '@/modules/clientes/repository';
@@ -35,7 +35,8 @@ export async function atualizarClienteAction(formData:FormData) {
   if(update.name.length<2||update.phone.length<10) throw new Error('Nome e telefone são obrigatórios.');
   const admin=createAdminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.SUPABASE_SERVICE_ROLE_KEY!,{auth:{autoRefreshToken:false,persistSession:false}});
   const { data:saved, error }=await admin.from('clients').update(update).eq('id',id).select('id').maybeSingle();
-  if(!error&&!saved) redirect(`/clientes/${id}?erro=${encodeURIComponent('Cliente não foi atualizado. Tente novamente.')}`);
-  if(error) redirect(`/clientes/${id}?erro=${encodeURIComponent(error.code==='23505'?'Este telefone já está cadastrado em outro cliente.':'Não foi possível salvar as alterações do cliente.')}`);
-  revalidatePath('/clientes'); revalidatePath(`/clientes/${id}`); revalidatePath('/'); redirect(`/clientes/${id}?salvo=1`);
+  if(!error&&!saved) redirect(`/clientes/${id}?erro=${encodeURIComponent('Cliente não foi atualizado. Tente novamente.')}`, RedirectType.replace);
+  if(error) redirect(`/clientes/${id}?erro=${encodeURIComponent(error.code==='23505'?'Este telefone já está cadastrado em outro cliente.':'Não foi possível salvar as alterações do cliente.')}`, RedirectType.replace);
+  revalidatePath('/clientes'); revalidatePath(`/clientes/${id}`); revalidatePath('/');
+  redirect(`/clientes/${id}?salvo=1`, RedirectType.replace);
 }
