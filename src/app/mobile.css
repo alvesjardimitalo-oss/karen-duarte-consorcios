@@ -104,3 +104,19 @@
  .sidebar-profile>div{display:none!important}
 }
 @media(max-width:380px){.sidebar nav{padding-right:54px!important}.sidebar-profile{right:15px!important}}
+
+
+/* Client portal touch polish */
+@media(max-width:520px){
+ .client-portal .primary,.client-portal .secondary,.client-portal button{min-height:44px}
+ .client-portal input,.client-portal select,.client-portal textarea{font-size:16px!important}
+ .portal-highlight button{margin-top:9px!important;width:100%!important;justify-content:center!important}
+ .customer-order-item{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}
+ .customer-order-item>*{width:100%!important;min-width:0!important}
+ .customer-order-item .icon{width:44px!important;justify-self:end!important}
+ .customer-order-actions{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}
+ .customer-order-actions button{width:100%!important;justify-content:center!important;margin:0!important}
+ .order-card{padding:14px!important;border-radius:16px!important}
+ .order-item,.payment-total{gap:8px!important}
+ .voucher-ledger-card{padding:13px!important}
+}
