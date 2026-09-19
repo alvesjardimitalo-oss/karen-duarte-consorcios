@@ -13,3 +13,13 @@ export async function revisarSolicitacaoAcessoAction(formData: FormData) {
  revalidatePath('/clientes');
  return approve?String(data??''):'';
 }
+
+export async function regenerarCodigoAcessoAction(formData: FormData) {
+ const { supabase, profile } = await requireStaff();
+ if (!['SUPER_ADMIN','ADMIN'].includes(profile.role)) throw new Error('Acesso negado.');
+ const id=String(formData.get('id')??'');
+ const {data,error}=await supabase.rpc('regenerate_client_activation_code',{p_request:id});
+ if(error) throw new Error(error.message);
+ revalidatePath('/clientes');
+ return String(data??'');
+}
