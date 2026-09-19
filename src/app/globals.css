@@ -257,3 +257,7 @@ a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!impo
 select,textarea{font:inherit}.clients-page select,.clients-page textarea,.content select,.content textarea{border:1px solid var(--line);background:#fffafd;border-radius:11px;padding:10px 12px;color:var(--text);outline:none}.clients-page select:focus,.clients-page textarea:focus,.content select:focus,.content textarea:focus{border-color:#df4d82;box-shadow:0 0 0 4px rgba(229,38,112,.08)}
 .empty-clients{min-height:150px}.client-list-card:has(.empty-clients){padding-bottom:18px}
 @media(max-width:900px){.app-content{margin-left:0;width:100%;padding:22px 14px 94px}.app-content>.page-heading,.app-content>.stat-grid,.app-content>.client-list-card{max-width:none}.official-brand-logo{filter:none}.app-content .form-grid{grid-template-columns:1fr!important}.app-content .button-row{display:grid;grid-template-columns:1fr}.app-content .button-row button{width:100%}.app-content .table-wrap{border-radius:12px}.login-brand .official-login-logo{width:170px}}
+
+/* Sidebar brand alignment fix */
+.app-nav-brand{justify-content:flex-start;padding-left:22px;padding-right:10px}
+.official-brand-logo{width:132px;height:88px;object-position:left center;margin:0}
