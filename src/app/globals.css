@@ -261,3 +261,8 @@ select,textarea{font:inherit}.clients-page select,.clients-page textarea,.conten
 /* Sidebar brand alignment fix */
 .app-nav-brand{justify-content:flex-start;padding-left:22px;padding-right:10px}
 .official-brand-logo{width:132px;height:88px;object-position:left center;margin:0}
+
+
+/* Dashboard client notifications */
+.dashboard-bell{position:relative;text-decoration:none}
+.notification-badge{position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#d81b60;color:#fff;border:2px solid #fff;display:grid;place-items:center;font-size:9px;font-weight:900;line-height:1}
