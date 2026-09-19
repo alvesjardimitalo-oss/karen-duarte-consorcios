@@ -1,0 +1,3 @@
+import{NextRequest,NextResponse}from'next/server';
+import{runCatalogSync,type CatalogSyncMode}from'@/modules/catalog/sync-service';
+export async function GET(req:NextRequest){const secret=process.env.CRON_SECRET;if(!secret||req.headers.get('authorization')!==`Bearer ${secret}`)return NextResponse.json({error:'unauthorized'},{status:401});const raw=req.nextUrl.searchParams.get('mode')||'discover';if(!['discover','repair','process'].includes(raw))return NextResponse.json({error:'invalid mode'},{status:400});try{const result=await runCatalogSync(raw as CatalogSyncMode,req.nextUrl.searchParams.get('source')||'');return NextResponse.json(result)}catch(e:any){return NextResponse.json({error:String(e?.message||e)},{status:500})}}

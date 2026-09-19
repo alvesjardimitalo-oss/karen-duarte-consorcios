@@ -1,0 +1,39 @@
+name: Build
+on:
+  push:
+    branches: [main, feat/consorcios-turmas-v2]
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - name: Build Next.js
+        id: nextbuild
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee build.log
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://vqunstjzfrembtyoadqj.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: build-placeholder
+          SUPABASE_SERVICE_ROLE_KEY: build-placeholder
+          CRON_SECRET: build-placeholder
+      - name: Publish build diagnostics
+        if: failure()
+        shell: bash
+        run: |
+          MSG=$(tail -n 80 build.log 2>/dev/null | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g' | tail -c 6000)
+          echo "::error file=build.log,title=Next.js production build failed::$MSG"
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-build-log
+          path: build.log

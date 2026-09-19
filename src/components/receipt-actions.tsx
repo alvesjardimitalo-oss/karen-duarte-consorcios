@@ -1,0 +1,3 @@
+'use client';
+import {Printer,Share2} from 'lucide-react';
+export function ReceiptActions({receiptNumber}:{receiptNumber:string}){async function share(){const data={title:`Comprovante ${receiptNumber}`,text:`Comprovante de pagamento Karen Martins · ${receiptNumber}`,url:window.location.href};if(navigator.share){await navigator.share(data);return;}await navigator.clipboard.writeText(window.location.href);alert('Link do comprovante copiado.');}return <div className="receipt-actions no-print"><button className="secondary" type="button" onClick={()=>window.print()}><Printer size={16}/>Imprimir / PDF</button><button className="primary" type="button" onClick={share}><Share2 size={16}/>Compartilhar</button></div>}
