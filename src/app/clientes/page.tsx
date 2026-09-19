@@ -16,7 +16,11 @@ export default async function ClientesPage() {
   for (const m of (memberships??[]) as any[]) { const name=m.consortia?.name; if(!name) continue; const arr=groupsByClient.get(m.client_id)??[]; if(!arr.includes(name)) arr.push(name); groupsByClient.set(m.client_id,arr); }
   const clientesComConsorcios=clientes.map(c=>({...c,consortia:groupsByClient.get(c.id)??[]}));
   const isAdmin=['SUPER_ADMIN','ADMIN'].includes(profile.role);
-  const { data: accessRequests } = isAdmin ? await supabase.from('client_access_requests').select('id,phone,status,request_type,requested_at,activation_expires_at,activation_attempts,clients(name)').in('status',['PENDENTE','APROVADA','PROCESSANDO']).order('requested_at',{ascending:true}) : { data: [] as any[] };
+  const { data: accessRows } = isAdmin ? await supabase.from('client_access_requests').select('id,client_id,phone,status,request_type,requested_at,activation_expires_at,activation_attempts').in('status',['PENDENTE','APROVADA','PROCESSANDO']).order('requested_at',{ascending:true}) : { data: [] as any[] };
+  const accessClientIds=[...new Set((accessRows??[]).map((r:any)=>r.client_id).filter(Boolean))];
+  const { data: accessClients } = isAdmin && accessClientIds.length ? await supabase.from('clients').select('id,name').in('id',accessClientIds) : { data: [] as any[] };
+  const accessClientNames=new Map((accessClients??[]).map((c:any)=>[c.id,c.name]));
+  const accessRequests=(accessRows??[]).map((r:any)=>({...r,clients:{name:accessClientNames.get(r.client_id)??'Cliente'}}));
 
   return <><StaffNav profile={profile} active="clientes"/><main className="clients-page with-app-nav"><div className="clients-wrap">
     <header className="clients-header"><div><Link href="/" className="back-link"><ArrowLeft size={17}/> Dashboard</Link><p className="eyebrow">CARTEIRA DE CLIENTES</p><h1>Clientes</h1><p className="muted">Cadastre, encontre e acompanhe seus clientes.</p></div><div className="clients-count"><Users size={20}/><strong>{clientes.length}</strong><span>clientes</span></div></header>
