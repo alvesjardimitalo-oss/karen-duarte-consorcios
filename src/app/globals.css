@@ -266,3 +266,14 @@ select,textarea{font:inherit}.clients-page select,.clients-page textarea,.conten
 /* Dashboard client notifications */
 .dashboard-bell{position:relative;text-decoration:none}
 .notification-badge{position:absolute;top:-7px;right:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:#d81b60;color:#fff;border:2px solid #fff;display:grid;place-items:center;font-size:9px;font-weight:900;line-height:1}
+
+
+/* Client access approval — prominent admin workflow */
+.access-admin-panel{margin:0 0 22px;padding:20px;border:2px solid #f0a9c4;border-radius:20px;background:linear-gradient(135deg,#fff7fa 0%,#fff 70%);box-shadow:0 10px 28px rgba(177,40,92,.08)}
+.access-admin-title{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.access-admin-title h2{margin:3px 0 4px}
+.access-admin-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:#d81b60;color:#fff;flex:0 0 auto}
+.access-request-list{background:#fff;border:1px solid #f1d6e0;border-radius:16px;overflow:hidden}
+.access-request-list .list-heading{padding:15px 16px;border-bottom:1px solid #f3e2e8}
+.access-empty{padding:16px;border:1px dashed #e5bdcc;border-radius:14px;background:#fff;color:#6b5960;font-weight:700}
+@media(max-width:640px){.access-admin-panel{padding:14px}.access-admin-title{gap:10px}.access-request-list button{min-height:44px}}
