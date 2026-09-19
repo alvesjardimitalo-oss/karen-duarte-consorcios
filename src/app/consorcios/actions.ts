@@ -35,10 +35,10 @@ export async function formarNovoGrupoAction(formData: FormData){
 export async function reservarMesAction(formData:FormData){
  const{supabase}=await requireStaff();const consortiumId=String(formData.get('consortium_id')),memberId=String(formData.get('member_id')),month=String(formData.get('scheduled_month'));
  if(!consortiumId||!memberId||!/^\\d{4}-\\d{2}-01$/.test(month))throw new Error('Dados da programação inválidos.');
- const{error}=await supabase.rpc('reserve_consortium_month',{p_consortium_id:consortiumId,p_member_id:memberId,p_scheduled_month:month});if(error)throw new Error(error.message);revalidatePath(\`/consorcios/\${consortiumId}\`);
+ const{error}=await supabase.rpc('reserve_consortium_month',{p_consortium_id:consortiumId,p_member_id:memberId,p_scheduled_month:month});if(error)throw new Error(error.message);revalidatePath(`/consorcios/${consortiumId}`);
 }
 export async function gerarCalendarioAction(formData:FormData){
  const{supabase}=await requireStaff();const id=String(formData.get('consortium_id')??'');if(!id)throw new Error('Turma inválida.');
- const{error}=await supabase.rpc('generate_consortium_schedule',{p_consortium_id:id});if(error)throw new Error(error.message);revalidatePath(\`/consorcios/\${id}\`);revalidatePath('/consorcios');revalidatePath('/sorteios');
+ const{error}=await supabase.rpc('generate_consortium_schedule',{p_consortium_id:id});if(error)throw new Error(error.message);revalidatePath(`/consorcios/${id}`);revalidatePath('/consorcios');revalidatePath('/sorteios');
 }
 export async function trocarMesesAction(formData:FormData){const{supabase}=await requireStaff();const id=String(formData.get('consortium_id')),a=String(formData.get('first_schedule_id')),b=String(formData.get('second_schedule_id'));if(!a||!b||a===b)throw new Error('Selecione duas pessoas diferentes.');const{error}=await supabase.rpc('swap_consortium_schedule',{p_first:a,p_second:b});if(error)throw new Error(error.message);revalidatePath(`/consorcios/${id}`);}
