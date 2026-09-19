@@ -6,7 +6,7 @@ const n=(v:FormDataEntryValue|null)=>Number(String(v??'').replace(',','.'))||0;
 
 export async function salvarProdutoAction(formData:FormData){
  const{supabase}=await requireAdminManager(); const id=String(formData.get('id')??'').trim();
- const sku=String(formData.get('sku')??'').replace(/\\D/g,''),name=String(formData.get('name')??'').trim(),brand=String(formData.get('brand')??'').trim();
+ const sku=String(formData.get('sku')??'').replace(/\D/g,''),name=String(formData.get('name')??'').trim(),brand=String(formData.get('brand')??'').trim();
  if(!sku||!name||!brand)throw new Error('Código numérico, produto e marca são obrigatórios.');
  const imageUrl=String(formData.get('image_url')??'').trim()||null;
  const{error}=await supabase.rpc('save_product',{p_id:id||null,p_sku:sku,p_name:name,p_brand:brand,p_category:String(formData.get('category')??'').trim()||null,p_description:String(formData.get('description')??'').trim()||null,p_image_url:imageUrl,p_price:id?null:0,p_sale_price:null,p_active:true,p_source_code:String(formData.get('source_code')??sku).trim()||sku,p_image_source_url:null,p_image_status:imageUrl?'VERIFIED':'PENDING'});if(error)throw new Error(error.message);revalidatePath('/compras');
