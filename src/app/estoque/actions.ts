@@ -1,6 +1,6 @@
 'use server';
 import{revalidatePath}from'next/cache';
-import{requireStaff}from'@/modules/auth/session';
+import{requireAdminManager}from'@/modules/auth/session';
 export async function salvarProntaEntregaAction(formData:FormData){
  const{supabase}=await requireAdminManager();
  const product_id=String(formData.get('product_id')??''),raw=String(formData.get('sale_price')??'').replace(',','.'),sale_price=raw===''?null:Number(raw),visible=formData.get('visible')==='on';
