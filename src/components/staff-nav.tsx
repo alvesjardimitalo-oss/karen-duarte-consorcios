@@ -9,7 +9,7 @@ export function StaffNav({profile,active}:{profile:Profile;active?:string}){
  const all:Item[]=[
   {key:'dashboard',href:'/',label:'Dashboard',Icon:LayoutDashboard},
   {key:'consorcios',href:'/consorcios',label:'Consórcios',Icon:Gift,admin:true,children:[{href:'/consorcios',label:'Turmas'},{href:'/sorteios',label:'Sorteios'},{href:'/calendario',label:'Calendário'},{href:'/contemplacoes',label:'Contemplações'},{href:'/vouchers',label:'Vouchers'}]},
-  {key:'clientes',href:'/clientes',label:'Clientes',Icon:Users,children:[{href:'/clientes',label:'Todos os clientes'},{href:'/clientes#solicitacoes-acesso',label:'Solicitações de acesso'},{href:'/parcelas',label:'A receber'}]},
+  {key:'clientes',href:'/clientes',label:'Clientes',Icon:Users,children:[{href:'/clientes',label:'Todos os clientes'},{href:'/clientes/solicitacoes',label:'Solicitações de acesso'},{href:'/parcelas',label:'A receber'}]},
   {key:'pedidos',href:'/pedidos',label:'Vendas',Icon:ShoppingBag,children:[{href:'/pedidos',label:'PDV / Nova venda'},{href:'/pedidos/historico',label:'Histórico de vendas'}]},
   {key:'catalogo',href:'/catalogo',label:'Produtos',Icon:BookOpen,admin:true,children:[{href:'/catalogo',label:'Catálogo'},{href:'/compras',label:'Compras'},{href:'/estoque',label:'Pronta entrega'}]},
   {key:'financeiro',href:'/financeiro',label:'Financeiro',Icon:WalletCards,admin:true,children:[{href:'/financeiro',label:'Visão financeira'},{href:'/financeiro/caixa',label:'Caixa'}]}
