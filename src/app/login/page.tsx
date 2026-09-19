@@ -99,9 +99,9 @@ export default function LoginPage() {
     if(!/^[0-9]{6}$/.test(code)||newPassword.length<8){setError('Informe o código de 6 dígitos e uma senha com pelo menos 8 caracteres.');return;}
     setActivating(true);
     try{
-      const supabase=createClient();
-      const {error}=await supabase.rpc('complete_client_password_reset',{p_phone:normalizePhone(identifier),p_code:code,p_password:newPassword});
-      if(error)throw error;
+      const response=await fetch('/api/auth/client-password-reset',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({phone:normalizePhone(identifier),code,password:newPassword})});
+      const result=await response.json();
+      if(!response.ok)throw new Error(result?.error||'Não foi possível redefinir a senha.');
       setResetMode(false);setCode('');setNewPassword('');setMessage('Senha alterada. Você já pode entrar com a nova senha.');
     }catch(e){setError(e instanceof Error?e.message:'Não foi possível redefinir a senha.');}
     finally{setActivating(false);}
