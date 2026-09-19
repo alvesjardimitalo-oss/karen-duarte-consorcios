@@ -53,9 +53,9 @@ export default function LoginPage() {
     setRequesting(true);
     try {
       const supabase = createClient();
-      const { error: requestError } = await supabase.rpc('request_client_access', { p_phone: phone });
+      const { data: requestState, error: requestError } = await supabase.rpc('request_client_access', { p_phone: phone });
       if (requestError) throw requestError;
-      setMessage('Solicitação enviada. Seu cadastro está aguardando aprovação da administração. Assim que for aprovado, você receberá um código de 6 dígitos para ativar sua conta.');
+      setMessage(requestState === 'PENDING' ? 'Já existe uma liberação em andamento para este telefone. Aguarde a aprovação da administração e o recebimento do seu código de liberação.' : 'Sua solicitação de inscrição na plataforma foi enviada. Aguarde a aprovação da administração e o recebimento do código para efetuar a liberação.');
       setActivationMode(true);
     } catch {
       setError('Não foi possível solicitar o acesso agora.');
