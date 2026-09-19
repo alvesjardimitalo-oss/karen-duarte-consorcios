@@ -19,6 +19,7 @@ export default function LoginPage() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [recovering, setRecovering] = useState(false);
+  const [requesting, setRequesting] = useState(false);
 
   function changeMode(next: 'cliente' | 'admin') {
     setMode(next); setIdentifier(''); setPassword(''); setError(''); setMessage('');
@@ -38,6 +39,24 @@ export default function LoginPage() {
     } catch {
       setError(mode === 'cliente' ? 'Telefone ou senha inválidos.' : 'E-mail ou senha inválidos.');
     } finally { setLoading(false); }
+  }
+
+  async function handleFirstAccess() {
+    setError(''); setMessage('');
+    const phone = normalizePhone(identifier);
+    if (phone.length < 13) { setError('Digite seu telefone com DDD.'); return; }
+    setRequesting(true);
+    try {
+      const supabase = createClient();
+      const { error: requestError } = await supabase.rpc('request_client_access', { p_phone: phone });
+      if (requestError) throw requestError;
+      setMessage('Solicitação enviada. Aguarde a aprovação da administração para ativar sua conta.');
+    } catch (requestError) {
+      const detail = requestError instanceof Error ? requestError.message : String(requestError);
+      if (detail.includes('Conta já ativada')) setError('Sua conta já está ativada. Entre com telefone e senha.');
+      else if (detail.includes('Cadastro não localizado')) setError('Não encontramos um cadastro ativo com esse telefone.');
+      else setError('Não foi possível solicitar o acesso agora.');
+    } finally { setRequesting(false); }
   }
 
   async function handleRecovery() {
@@ -73,7 +92,7 @@ export default function LoginPage() {
             : <label>E-mail<input type="email" autoComplete="email" value={identifier} onChange={(e)=>setIdentifier(e.target.value)} required placeholder="seu@email.com" /></label>}
           <label>Senha<input type="password" autoComplete="current-password" value={password} onChange={(e)=>setPassword(e.target.value)} required minLength={6} placeholder="Sua senha" /></label>
           {mode === 'admin' && <button type="button" onClick={handleRecovery} disabled={recovering} style={{background:'none',border:0,padding:0,color:'#d6457d',fontWeight:700,textAlign:'right',cursor:'pointer'}}>{recovering?'Enviando...':'Esqueci minha senha'}</button>}
-          {mode === 'cliente' && <p className="muted" style={{margin:0}}>Primeiro acesso? A ativação segura da conta será disponibilizada aqui.</p>}
+          {mode === 'cliente' && <button type="button" onClick={handleFirstAccess} disabled={requesting} style={{background:'none',border:0,padding:0,color:'#d6457d',fontWeight:700,textAlign:'right',cursor:'pointer'}}>{requesting?'Enviando solicitação...':'Primeiro acesso / Solicitar ativação'}</button>}
           {error && <p className="form-error" role="alert">{error}</p>}
           {message && <p role="status" style={{color:'#6b7f67',fontWeight:600}}>{message}</p>}
           <button className="primary login-submit" disabled={loading}>{loading?'Entrando...':'Entrar'}</button>
