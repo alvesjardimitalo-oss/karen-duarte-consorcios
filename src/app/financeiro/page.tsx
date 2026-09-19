@@ -10,7 +10,7 @@ export default async function Financeiro(){
  const{supabase,profile}=await requireStaff();
  const today=new Date(),todayKey=today.toISOString().slice(0,10),monthStart=new Date(today.getFullYear(),today.getMonth(),1).toISOString().slice(0,10),nextMonth=new Date(today.getFullYear(),today.getMonth()+1,1).toISOString().slice(0,10);
  const[{data:pay},{data:rec},{data:paidRec},{data:orders},{data:vouchers},{data:sales},{data:saleDebts},{data:saleDebtPaid},{data:salePayments}]=await Promise.all([
-  supabase.from('accounts_payable').select('id,supplier_name,description,due_date,amount,status,paid_at,paid_amount').order('due_date'),
+  supabase.from('accounts_payable').select('id,supplier_name,description,due_date,amount,status,paid_at,paid_amount,payment_method').order('due_date'),
   supabase.from('installments').select('id,due_date,amount,status').in('status',['A_VENCER','VENCIDA']).order('due_date'),
   supabase.from('installments').select('id,amount,paid_at,status').eq('status','PAGA').gte('paid_at',monthStart).lt('paid_at',nextMonth),
   supabase.from('purchase_orders').select('id,total_amount,status,ordered_at,received_at,payment_method'),
@@ -33,7 +33,7 @@ export default async function Financeiro(){
   </div>
   <div className="stats">
    <article className="stat"><div className="stat-icon"><Landmark/></div><span>Compras no mês</span><strong>{money.format(boughtMonth)}</strong><small>pedidos emitidos no período</small></article>
-   <article className="stat"><div className="stat-icon"><ArrowDownCircle/></div><span>Pago no mês</span><strong>{money.format(paidMonth)}</strong><small>fornecedores efetivamente pagos</small></article><article className="stat"><div className="stat-icon"><WalletCards/></div><span>Fluxo líquido do mês</span><strong>{money.format(netCash)}</strong><small>recebimentos menos pagamentos efetivos</small></article>
+   <article className="stat"><div className="stat-icon"><ArrowDownCircle/></div><span>Pago no mês</span><strong>{money.format(paidMonth)}</strong><small>fornecedores efetivamente pagos · baixa registrada por método</small></article><article className="stat"><div className="stat-icon"><WalletCards/></div><span>Fluxo líquido do mês</span><strong>{money.format(netCash)}</strong><small>recebimentos menos pagamentos efetivos</small></article>
    <article className="stat"><div className="stat-icon"><TriangleAlert/></div><span>Em atraso</span><strong>{money.format(overdueRec.reduce((s,x)=>s+n(x.amount),0))}</strong><small>{overdueRec.length} recebíveis · {overduePay.length} contas a pagar</small></article>
    <article className="stat"><div className="stat-icon"><CalendarClock/></div><span>Vouchers disponíveis</span><strong>{money.format(voucherAvailable)}</strong><small>{money.format(voucherReserved)} reservado · face {money.format(voucherFace)}</small></article>
   </div>
