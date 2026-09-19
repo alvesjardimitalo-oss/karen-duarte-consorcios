@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { requireStaff } from '@/modules/auth/session';
+import { requireStaff, requireAdminManager } from '@/modules/auth/session';
 import { criarCliente } from '@/modules/clientes/repository';
 
 async function uploadAvatar(supabase:any, foto:FormDataEntryValue|null) {
@@ -25,10 +25,11 @@ export async function criarClienteAction(formData: FormData) {
 }
 
 export async function atualizarClienteAction(formData:FormData) {
-  const { supabase }=await requireStaff();
+  const { supabase, profile }=await requireStaff();
   const id=String(formData.get('id')??'');
   const avatarUrl=await uploadAvatar(supabase,formData.get('foto'));
-  const update:any={name:String(formData.get('nome')??'').trim(),phone:String(formData.get('telefone')??'').replace(/\D/g,''),cpf:String(formData.get('cpf')??'').replace(/\D/g,'')||null,address:String(formData.get('endereco')??'').trim()||null,tags:String(formData.get('tags')??'').split(',').map(v=>v.trim()).filter(Boolean),active:formData.get('active')==='on'};
+  const update:any={name:String(formData.get('nome')??'').trim(),phone:String(formData.get('telefone')??'').replace(/\D/g,''),cpf:String(formData.get('cpf')??'').replace(/\D/g,'')||null,address:String(formData.get('endereco')??'').trim()||null,tags:String(formData.get('tags')??'').split(',').map(v=>v.trim()).filter(Boolean)};
+  if(['SUPER_ADMIN','ADMIN'].includes(profile.role)) update.active=formData.get('active')==='on';
   if(avatarUrl) update.avatar_url=avatarUrl;
   if(update.name.length<2||update.phone.length<10) throw new Error('Nome e telefone são obrigatórios.');
   const { error }=await supabase.from('clients').update(update).eq('id',id); if(error) throw error;
