@@ -419,3 +419,9 @@ a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!impo
 .client-portal .portal-wrap>.portal-highlight small{grid-column:1/-1!important;font-size:8px!important;line-height:1.2!important;color:#9a7482!important}
 .client-portal .portal-wrap>.portal-highlight button{grid-column:1/-1!important;width:auto!important;min-height:28px!important;margin-top:5px!important;padding:5px 12px!important;border-radius:9px!important;font-size:9px!important;box-shadow:none!important}
 @media(max-width:560px){.client-portal .portal-wrap>.portal-highlight{width:100%!important;max-width:none!important}}
+
+/* Scope compact notification without touching contemplation highlights */
+.notification-slot{margin:8px 0 16px}.notification-slot>.portal-highlight{width:fit-content!important;max-width:430px!important;min-height:0!important;padding:9px 12px!important;margin:0!important;border-radius:13px!important;box-shadow:none!important;background:#fff!important;border:1px solid #f0dce4!important}
+.notification-slot>.portal-highlight>svg{width:17px!important;height:17px!important}.notification-slot>.portal-highlight button{min-height:28px!important;padding:5px 12px!important;font-size:9px!important;box-shadow:none!important}
+.portal-welcome>.portal-highlight{width:auto!important;max-width:none!important;margin-top:16px!important}
+@media(max-width:560px){.notification-slot>.portal-highlight{width:100%!important;max-width:none!important}}
