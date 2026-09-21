@@ -290,3 +290,27 @@ a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!impo
 .app-nav nav{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding-bottom:12px!important;scrollbar-width:thin}
 .app-nav-profile{position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;flex:0 0 auto!important;margin:8px 12px 12px!important}
 }
+
+/* Admin desktop layout V9 — sidebar + catalog repair */
+@media (min-width:901px){
+ body{overflow-x:hidden!important}
+ .app-shell{min-height:100vh!important;padding-left:250px!important;display:block!important}
+ .app-nav{position:fixed!important;z-index:100!important;inset:0 auto 0 0!important;width:230px!important;height:100vh!important;max-height:100vh!important;background:#fff!important;border-right:1px solid #f0d4df!important;box-shadow:8px 0 28px rgba(91,24,51,.06)!important;display:flex!important;flex-direction:column!important;overflow:hidden!important}
+ .app-nav-brand{display:flex!important;flex:0 0 132px!important;height:132px!important;padding:18px 28px!important;border-bottom:1px solid #f3dce5!important;background:#fff!important}
+ .app-nav-brand img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important}
+ .app-nav nav{display:flex!important;flex:1 1 auto!important;min-height:0!important;flex-direction:column!important;gap:4px!important;padding:12px 14px!important;overflow-y:auto!important;overflow-x:hidden!important;scrollbar-width:thin!important;scrollbar-color:#d8a6b9 transparent!important}
+ .app-nav nav a{display:flex!important;align-items:center!important;gap:11px!important;min-height:43px!important;padding:10px 12px!important;border-radius:11px!important;color:#78344d!important;text-decoration:none!important;font-size:13px!important;font-weight:700!important;background:transparent!important}
+ .app-nav nav a:hover{background:#fff0f5!important;color:#aa174e!important}
+ .app-nav nav a.active{background:#9f174d!important;color:#fff!important;box-shadow:0 7px 18px rgba(159,23,77,.18)!important}
+ .app-nav nav a.active svg{color:#fff!important}
+ .app-nav-profile{position:relative!important;inset:auto!important;flex:0 0 auto!important;margin:8px 14px 14px!important;padding:10px!important;border:1px solid #efd3de!important;border-radius:14px!important;background:#fff7fa!important}
+ .app-content{width:100%!important;max-width:1500px!important;margin:0 auto!important;padding:34px 38px 60px!important;overflow:visible!important}
+ .app-content>header,.page-heading{min-height:auto!important;margin-bottom:22px!important}
+ .app-content .stat-grid{margin-bottom:18px!important}
+ .app-content .client-list-card{overflow:visible!important}
+ .app-content .form-grid select,.app-content .form-grid input{width:100%!important;min-height:44px!important;border:1px solid #e7bdcd!important;border-radius:11px!important;background:#fff!important;padding:0 12px!important;color:#3d2030!important}
+ .app-content .button-row{display:flex!important;gap:10px!important;flex-wrap:wrap!important;margin:14px 0!important}
+ .app-content .button-row button{min-height:42px!important;padding:0 16px!important;border:1px solid #dca9bc!important;border-radius:11px!important;background:#fff0f5!important;color:#9f174d!important;font-weight:800!important;cursor:pointer!important}
+ .app-content .button-row button:first-child{background:#9f174d!important;color:#fff!important;border-color:#9f174d!important}
+ .app-content .button-row button:disabled{opacity:.55!important;cursor:not-allowed!important}
+}
