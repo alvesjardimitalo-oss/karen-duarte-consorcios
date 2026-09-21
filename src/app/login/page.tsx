@@ -14,7 +14,8 @@ export default function LoginPage(){
    const supabase=createClient();
    if(mode==='cliente'){
     let d=login.replace(/\D/g,'');if(d.startsWith('55')&&d.length>=12)d=d.slice(2);
-    const{error:a}=await supabase.auth.signInWithPassword({phone:'+55'+d,password});if(a)throw a;
+    const email=`cliente.${d}@acesso.karenmartins.app`;
+    const{error:a}=await supabase.auth.signInWithPassword({email,password});if(a)throw a;
    }else{
     const{error:a}=await supabase.auth.signInWithPassword({email:login.trim(),password});if(a)throw a;
    }
