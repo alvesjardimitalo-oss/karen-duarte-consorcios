@@ -19,10 +19,27 @@ async function uploadAvatar(supabase:any, foto:FormDataEntryValue|null) {
 }
 
 export async function criarClienteAction(formData: FormData) {
-  const { supabase }=await requireStaff();
-  const avatarUrl=await uploadAvatar(supabase,formData.get('foto'));
-  await criarCliente(supabase,{nome:String(formData.get('nome')??'').trim(),telefone:String(formData.get('telefone')??'').replace(/\D/g,''),cpf:String(formData.get('cpf')??'').replace(/\D/g,''),endereco:String(formData.get('endereco')??'').trim(),tags:String(formData.get('tags')??'').split(',').map(v=>v.trim()).filter(Boolean),avatarUrl});
+  await requireStaff();
+
+  const nome=String(formData.get('nome')??'').trim();
+  const telefone=String(formData.get('telefone')??'').replace(/\D/g,'');
+  if(nome.length<2||telefone.length<10) redirect(`/clientes?erro=${encodeURIComponent('Nome e telefone são obrigatórios.')}`, RedirectType.replace);
+
+  const admin=createAdminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.SUPABASE_SERVICE_ROLE_KEY!,{auth:{autoRefreshToken:false,persistSession:false}});
+  try{
+    const avatarUrl=await uploadAvatar(admin,formData.get('foto'));
+    await criarCliente(admin,{nome,telefone,cpf:String(formData.get('cpf')??'').replace(/\D/g,''),endereco:String(formData.get('endereco')??'').trim(),tags:String(formData.get('tags')??'').split(',').map(v=>v.trim()).filter(Boolean),avatarUrl});
+  }catch(error:any){
+    const message=error?.code==='23505'
+      ? 'Este telefone já está cadastrado em outro cliente.'
+      : error?.message?.includes('foto')
+        ? error.message
+        : 'Não foi possível cadastrar o cliente. Tente novamente.';
+    redirect(`/clientes?erro=${encodeURIComponent(message)}`, RedirectType.replace);
+  }
+
   revalidatePath('/clientes'); revalidatePath('/');
+  redirect('/clientes?cadastrado=1', RedirectType.replace);
 }
 
 export async function atualizarClienteAction(formData:FormData) {
