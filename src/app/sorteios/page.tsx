@@ -36,7 +36,7 @@ export default async function SorteiosPage() {
         <form action={criarSorteioAction} className="draw-form-modern">
           <label><span>Turma</span><select name="consortium_id" required defaultValue=""><option value="" disabled>Selecione a turma</option>{cs.map(c=><option value={c.id} key={c.id}>{c.name}</option>)}</select></label>
           <label><span>Data do sorteio</span><div className="draw-date-field"><CalendarDays size={18}/><input type="date" name="scheduled_for" required/></div></label>
-          <button className="primary draw-submit"><CalendarDays size={17}/>Agendar sorteio</button><button className="secondary draw-submit" formAction={prepararAgendaSorteiosAction}><CalendarDays size={17}/>Gerar agenda completa</button>
+          <button className="primary draw-submit"><CalendarDays size={17}/>Agendar sorteio</button><button className="secondary draw-submit" formNoValidate formAction={prepararAgendaSorteiosAction}><CalendarDays size={17}/>Gerar agenda completa</button>
         </form>
       </section>
 
