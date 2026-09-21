@@ -361,3 +361,21 @@ a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!impo
 /* Client dashboard shortcut cleanup */
 .portal-shortcuts{padding:18px 20px!important}.portal-shortcuts>div:first-child{display:flex;align-items:baseline;gap:12px}.portal-shortcuts>div:first-child .eyebrow{margin:0}.portal-shortcuts>div:first-child h2{font-size:16px;margin:0}.portal-shortcut-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.portal-shortcut{min-height:64px;padding:12px 14px;border:1px solid #efd9e2;border-radius:14px;background:#fff;display:flex;align-items:center;gap:11px;text-decoration:none;color:#572238;transition:.16s}.portal-shortcut:hover{border-color:#dba6bb;background:#fff8fb;transform:translateY(-1px)}.portal-shortcut>svg{color:#a9154d;flex:0 0 auto}.portal-shortcut>div{display:grid;gap:2px}.portal-shortcut strong{font-size:12px}.portal-shortcut span{font-size:9px;color:#9b7081}
 @media(max-width:620px){.portal-shortcuts>div:first-child{display:block}.portal-shortcut-row{grid-template-columns:1fr}.portal-shortcut{min-height:56px}}
+
+/* Client Portal Final Overrides V11
+   Single source of truth for components that accumulated legacy definitions. */
+.client-portal-with-nav{background:#fffafb}
+.client-portal .portal-wrap{width:min(1080px,100%);margin:0 auto}
+.client-brand-footer{margin:22px 0 8px!important;padding:22px 24px!important;border:1px solid #ead9df!important;border-radius:20px!important;background:#fff!important;display:grid!important;grid-template-columns:minmax(220px,.75fr) 1.25fr!important;gap:20px!important;align-items:center!important;box-shadow:0 8px 26px rgba(83,22,46,.05)!important}
+.client-brand-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
+.client-brand-badge{min-width:0!important;min-height:64px!important;padding:10px!important;border:1px solid #eee3e7!important;border-radius:13px!important;background:#fff!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important}
+.portal-promo-banner{min-height:148px!important;margin:0 0 16px!important;padding:22px 26px!important;border-radius:20px!important;box-shadow:0 12px 32px rgba(99,20,53,.14)!important}
+.portal-promo-banner h2{font-size:24px!important;line-height:1.12!important;max-width:720px!important;margin:5px 0!important}
+.portal-promo-banner p{font-size:11px!important;max-width:700px!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.portal-promo-live .promo-icon{width:46px!important;height:46px!important;border-radius:14px!important;margin-right:16px!important}
+.magazine-wall{grid-template-columns:repeat(auto-fill,minmax(155px,1fr))!important;gap:14px!important;margin-top:14px!important}
+.magazine-cover{border-radius:16px!important;box-shadow:0 8px 22px rgba(73,20,42,.07)!important}
+.magazine-cover-art{aspect-ratio:4/5!important;padding:15px!important}.magazine-cover-art span{font-size:16px!important}.magazine-cover-art svg{margin:14px 0!important}
+.order-builder{margin-top:16px!important}
+@media(max-width:900px){.client-brand-footer{grid-template-columns:1fr!important}.client-brand-grid{grid-template-columns:repeat(4,1fr)!important}}
+@media(max-width:620px){.client-brand-footer{padding:16px!important}.client-brand-grid{grid-template-columns:repeat(2,1fr)!important}.portal-promo-banner{min-height:128px!important;padding:18px!important}.portal-promo-banner h2{font-size:19px!important}.portal-promo-live .promo-icon{display:none!important}.magazine-wall{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}}
