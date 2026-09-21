@@ -1,7 +1,7 @@
 import { CalendarDays, CheckCircle2, Clock3, Trophy, Users } from 'lucide-react';
 import { requireAdminManager } from '@/modules/auth/session';
 import { StaffNav } from '@/components/staff-nav';
-import { criarSorteioAction, concluirSorteioAction } from './actions';
+import { criarSorteioAction, concluirSorteioAction, prepararAgendaSorteiosAction, sortearAgoraAction } from './actions';
 
 export default async function SorteiosPage() {
   const { supabase, profile } = await requireAdminManager();
@@ -36,7 +36,7 @@ export default async function SorteiosPage() {
         <form action={criarSorteioAction} className="draw-form-modern">
           <label><span>Turma</span><select name="consortium_id" required defaultValue=""><option value="" disabled>Selecione a turma</option>{cs.map(c=><option value={c.id} key={c.id}>{c.name}</option>)}</select></label>
           <label><span>Data do sorteio</span><div className="draw-date-field"><CalendarDays size={18}/><input type="date" name="scheduled_for" required/></div></label>
-          <button className="primary draw-submit"><CalendarDays size={17}/>Agendar sorteio</button>
+          <button className="primary draw-submit"><CalendarDays size={17}/>Agendar sorteio</button><button className="secondary draw-submit" formAction={prepararAgendaSorteiosAction}><CalendarDays size={17}/>Gerar agenda completa</button>
         </form>
       </section>
 
@@ -48,7 +48,7 @@ export default async function SorteiosPage() {
           return <article className={'draw-card-modern '+(d.completed_at?'is-completed':'')} key={d.id}>
             <div className="draw-card-date"><b>{new Date(d.scheduled_for+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit'})}</b><span>{new Date(d.scheduled_for+'T12:00:00').toLocaleDateString('pt-BR',{month:'short'}).replace('.','')}</span></div>
             <div className="draw-card-info"><span className={'draw-status '+(d.completed_at?'completed':'scheduled')}>{d.completed_at?<><CheckCircle2 size={14}/>Concluído</>:<><Clock3 size={14}/>Agendado</>}</span><h3>{d.consortia?.name} · Sorteio {d.draw_number}</h3><p><Users size={15}/>{eligible.length} participante{eligible.length===1?'':'s'} {eligible.length===1?'elegível':'elegíveis'}</p>{d.completed_at&&<strong className="winner-name"><Trophy size={15}/> Contemplado: {winner?.clients?.name??'—'}</strong>}{voucher&&<small className="draw-voucher-code">Voucher {voucher.code} · saldo {Number(voucher.available_balance).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</small>}</div>
-            {!d.completed_at&&<form action={concluirSorteioAction} className="draw-winner-form-modern"><input type="hidden" name="draw_id" value={d.id}/><label><span>Contemplado</span><select name="winner_member_id" required defaultValue=""><option value="" disabled>Selecionar participante</option>{eligible.map(m=><option value={m.id} key={m.id}>{m.clients?.name}</option>)}</select></label><button className="primary"><Trophy size={16}/>Confirmar</button></form>}
+            {!d.completed_at&&<form action={concluirSorteioAction} className="draw-winner-form-modern"><input type="hidden" name="draw_id" value={d.id}/><label><span>Contemplado</span><select name="winner_member_id" required defaultValue=""><option value="" disabled>Selecionar participante</option>{eligible.map(m=><option value={m.id} key={m.id}>{m.clients?.name}</option>)}</select></label><button className="primary"><Trophy size={16}/>Confirmar escolhido</button><button className="secondary" formAction={sortearAgoraAction}><Trophy size={16}/>Sortear agora</button></form>}
           </article>})}</div>
       </section>
     </div>
