@@ -435,3 +435,8 @@ a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!impo
 .client-purchase-list>.order-card>div:first-child p{font-size:10px!important;margin:0!important}
 .client-purchase-list>.order-card>.order-item{padding:8px 2px!important}
 @media print{.client-app-nav,.clients-header,.client-brand-footer,.portal-quick-actions,.notification-slot{display:none!important}.client-portal-with-nav{margin-left:0!important}.order-card{box-shadow:none!important;border:1px dashed #aaa!important}}
+
+/* Shared POS/client thermal receipt */
+.receipt-roll{width:min(100%,390px);margin:14px auto!important;padding:24px 20px!important;border-radius:4px!important;background:#fff!important;border:1px solid #ddd!important;box-shadow:0 8px 24px rgba(0,0,0,.08)!important;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;color:#171717!important}
+.receipt-roll:before,.receipt-roll:after{content:"";display:block;border-top:1px dashed #aaa;margin:8px 0 14px}.receipt-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:12px 0}.receipt-actions button{min-height:34px!important;padding:7px 11px!important;font-size:10px!important}
+@media print{.receipt-actions{display:none!important}.receipt-roll{width:80mm!important;margin:0!important;padding:5mm!important;border:0!important;box-shadow:none!important}}
