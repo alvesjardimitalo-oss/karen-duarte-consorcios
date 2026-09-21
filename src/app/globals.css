@@ -461,3 +461,5 @@ a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!impo
 
 /* Receipt financial readability */
 .receipt-pending{margin-top:5px;padding:6px 0!important;border-top:1px dotted #aaa;font-weight:700}.receipt-installment{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dotted #ddd;font-size:9px}.receipt-installment>div{display:grid;gap:1px}.receipt-installment>div:last-child{text-align:right}.receipt-installment small{font-size:7px;color:#666}.receipt-installment.is-pending>div:last-child small{font-weight:800;color:#111}.receipt-installment.is-paid{opacity:.68}
+
+.receipt-paid{margin-top:4px;padding-top:6px!important;border-top:1px dotted #aaa;font-weight:700}.receipt-roll .receipt-line+strong{display:block;margin-top:6px;font-size:9px;letter-spacing:.08em}
