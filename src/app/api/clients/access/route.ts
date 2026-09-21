@@ -43,6 +43,7 @@ export async function POST(req:NextRequest){
   const phone=digits(client.phone);
   if(!/^\d{10,11}$/.test(phone))return NextResponse.json({error:'O telefone do cliente precisa ter DDD e 10 ou 11 dígitos.'},{status:400});
   const authPhone=`+55${phone}`;
+  const authEmail=`cliente.${phone}@acesso.karenmartins.app`;
   const password=makePassword();
 
   const {data:phoneProfiles,error:phoneProfileError}=await admin.from('profiles').select('id,role').eq('phone',phone);
@@ -73,13 +74,13 @@ export async function POST(req:NextRequest){
 
   if(uid){
     const {error:updateError}=await admin.auth.admin.updateUserById(uid,{
-      phone:authPhone,password,phone_confirm:true,
+      phone:authPhone,email:authEmail,password,phone_confirm:true,email_confirm:true,
       user_metadata:{name:client.name,client_id:client.id}
     });
     if(updateError)throw new Error(`Falha ao atualizar usuário: ${updateError.message}`);
   }else{
     const {data:created,error:createError}=await admin.auth.admin.createUser({
-      phone:authPhone,password,phone_confirm:true,
+      phone:authPhone,email:authEmail,password,phone_confirm:true,email_confirm:true,
       user_metadata:{name:client.name,client_id:client.id}
     });
     if(createError||!created.user)throw new Error(`Falha ao criar usuário: ${createError?.message??'usuário não retornado pelo Auth'}`);
