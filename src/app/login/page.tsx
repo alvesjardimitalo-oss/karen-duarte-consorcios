@@ -19,7 +19,7 @@ export default function LoginPage(){
    }else{
     const{error:a}=await supabase.auth.signInWithPassword({email:login.trim(),password});if(a)throw a;
    }
-   router.replace('/');router.refresh();
+   router.replace(mode==='cliente'?'/portal':'/');router.refresh();
   }catch{setError(mode==='cliente'?'Telefone ou senha inválidos.':'E-mail ou senha inválidos.')}finally{setLoading(false)}
  }
  return <main className="login-page"><section className="login-card">
