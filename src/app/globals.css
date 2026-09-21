@@ -389,3 +389,6 @@ a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!impo
 
 /* Confirmed purchases vs legacy review */
 .historical-review-link{display:inline-flex;margin-top:12px;padding:8px 11px;border-radius:10px;background:#fff9ed;color:#80561e;font-size:10px;font-weight:800;text-decoration:none}.historical-review-box{padding:14px 16px;border:1px dashed #e3c890;border-radius:14px;background:#fffaf1}.historical-review-box summary{cursor:pointer;font-size:12px;font-weight:900;color:#724914}.historical-review-box>p{font-size:10px;color:#8d704b}.historical-review-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid #f0dfbe;font-size:10px}.historical-review-row strong{color:#9b6b23;white-space:nowrap}
+
+/* Credit ledger confidence cleanup */
+.voucher-review-box{margin:16px 0}.voucher-review-box summary{font-size:11px}.historical-receipt .historical-status{display:none}.historical-receipt .redemption-summary{margin-bottom:10px}
