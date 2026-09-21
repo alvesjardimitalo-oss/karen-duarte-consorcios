@@ -458,3 +458,6 @@ a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!impo
 
 /* Client purchase filters */
 .client-purchase-filters{display:flex;align-items:center;gap:7px;margin:12px 0 6px;flex-wrap:wrap}.client-purchase-filters select{height:34px;border:1px solid #ead9e0;border-radius:10px;background:#fff;padding:0 10px;font-size:9px;color:#5f4550}.client-purchase-filters .secondary{min-height:34px!important;padding:6px 10px!important;font-size:9px!important}@media(max-width:560px){.client-purchase-filters{display:grid;grid-template-columns:1fr 1fr}.client-purchase-filters select{width:100%}.client-purchase-filters .secondary{width:100%}}
+
+/* Receipt financial readability */
+.receipt-pending{margin-top:5px;padding:6px 0!important;border-top:1px dotted #aaa;font-weight:700}.receipt-installment{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dotted #ddd;font-size:9px}.receipt-installment>div{display:grid;gap:1px}.receipt-installment>div:last-child{text-align:right}.receipt-installment small{font-size:7px;color:#666}.receipt-installment.is-pending>div:last-child small{font-weight:800;color:#111}.receipt-installment.is-paid{opacity:.68}
