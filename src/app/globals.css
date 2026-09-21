@@ -392,3 +392,20 @@ a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!impo
 
 /* Credit ledger confidence cleanup */
 .voucher-review-box{margin:16px 0}.voucher-review-box summary{font-size:11px}.historical-receipt .historical-status{display:none}.historical-receipt .redemption-summary{margin-bottom:10px}
+
+/* Screenshot QA pass 2026-09-21 */
+.client-purchase-list .consortium-purchase{padding:20px!important;border:1px solid #efd6df!important;border-left:4px solid #b31550!important;border-radius:18px!important;background:#fff!important}
+.client-purchase-list .consortium-purchase>.order-item{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:16px!important;align-items:center!important;padding:11px 4px!important;border-bottom:1px solid #f4e7ec!important}
+.client-purchase-list .consortium-purchase>.order-item>div{display:flex!important;flex-direction:column!important;gap:3px!important}
+.client-purchase-list .consortium-purchase>.order-item strong{line-height:1.3!important}.client-purchase-list .consortium-purchase>.order-item span{font-size:10px!important;color:#966579!important}
+.client-purchase-list .consortium-purchase>.payment-total{display:flex!important;justify-content:space-between!important;gap:20px!important;border-bottom:1px solid #f3e6eb!important}
+.client-purchase-list .consortium-purchase>.historical-order-note{max-width:none!important}
+.portal-summary{margin-top:20px!important}
+.portal-quick-actions{margin-bottom:12px!important}
+.push-card,.push-notifications{margin-bottom:18px!important}
+.client-portal .stats{gap:10px!important}.client-portal .stat{min-height:72px!important;padding:14px 18px!important}.client-portal .stat strong{font-size:20px!important}
+.voucher-ledger-card{padding:16px!important}.voucher-ledger-card .list-heading{margin-bottom:8px!important}.historical-receipt{padding:16px!important}
+.compact-installments .member-card{min-height:58px!important;padding:9px 12px!important}.compact-installments .client-avatar{width:38px!important;height:38px!important}
+.portal-promo-banner h2{font-size:20px!important;line-height:1.16!important;max-width:620px!important}.portal-promo-banner{min-height:132px!important;padding:18px 22px!important}
+.magazine-empty{min-height:104px!important;padding:16px!important}
+@media(max-width:700px){.client-purchase-list .consortium-purchase>.order-item{grid-template-columns:1fr!important;gap:5px!important}.portal-promo-banner h2{font-size:18px!important}}
