@@ -455,3 +455,6 @@ a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!impo
 
 /* Client purchase history pagination */
 .client-history-pagination{margin:14px 0 4px!important}.client-history-pagination .secondary{background:#fff!important;border-color:#ead9e0!important}.client-history-pagination span{font-size:9px!important}
+
+/* Client purchase filters */
+.client-purchase-filters{display:flex;align-items:center;gap:7px;margin:12px 0 6px;flex-wrap:wrap}.client-purchase-filters select{height:34px;border:1px solid #ead9e0;border-radius:10px;background:#fff;padding:0 10px;font-size:9px;color:#5f4550}.client-purchase-filters .secondary{min-height:34px!important;padding:6px 10px!important;font-size:9px!important}@media(max-width:560px){.client-purchase-filters{display:grid;grid-template-columns:1fr 1fr}.client-purchase-filters select{width:100%}.client-purchase-filters .secondary{width:100%}}
