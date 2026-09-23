@@ -1,7 +1,7 @@
 'use server';
 import{revalidatePath}from'next/cache';import{requireStaff}from'@/modules/auth/session';import{runCatalogSync,type CatalogSyncMode}from'@/modules/catalog/sync-service';
-const allowed=['Natura','O Boticário','Eudora','Quem Disse, Berenice?','O.U.i'];
-const officialDomains:Record<string,string>={'Natura':'natura.com.br','O Boticário':'boticario.com.br','Eudora':'eudora.com.br','Quem Disse, Berenice?':'quemdisseberenice.com.br','O.U.i':'ouiparis.com'};
+const allowed=['Natura','Avon','O Boticário','Eudora','Quem Disse, Berenice?','O.U.i'];
+const officialDomains:Record<string,string>={'Natura':'natura.com.br','Avon':'avon.com.br','O Boticário':'boticario.com.br','Eudora':'eudora.com.br','Quem Disse, Berenice?':'quemdisseberenice.com.br','O.U.i':'ouiparis.com'};
 function isOfficialSource(brand:string|null,url:string){if(!brand||!url)return false;try{const host=new URL(url).hostname.toLowerCase().replace(/^www\./,'');const domain=officialDomains[brand];return !!domain&&(host===domain||host.endsWith('.'+domain))}catch{return false}}
 export async function catalogQueueAction(formData:FormData){
   const{profile}=await requireStaff();
