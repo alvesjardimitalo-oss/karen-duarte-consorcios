@@ -463,3 +463,16 @@ a.stat-link,a.dashboard-panel-link,a.consortium-card-link{color:var(--text)!impo
 .receipt-pending{margin-top:5px;padding:6px 0!important;border-top:1px dotted #aaa;font-weight:700}.receipt-installment{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dotted #ddd;font-size:9px}.receipt-installment>div{display:grid;gap:1px}.receipt-installment>div:last-child{text-align:right}.receipt-installment small{font-size:7px;color:#666}.receipt-installment.is-pending>div:last-child small{font-weight:800;color:#111}.receipt-installment.is-paid{opacity:.68}
 
 .receipt-paid{margin-top:4px;padding-top:6px!important;border-top:1px dotted #aaa;font-weight:700}.receipt-roll .receipt-line+strong{display:block;margin-top:6px;font-size:9px;letter-spacing:.08em}
+
+
+/* Brand alignment hotfix — admin sidebar + 80mm receipt */
+@media (min-width:901px){
+ .app-nav-brand{flex:0 0 132px!important;height:132px!important;padding:14px 24px 12px!important;align-items:center!important;justify-content:center!important;overflow:hidden!important}
+ .app-nav-brand .official-brand-logo{position:static!important;display:block!important;width:150px!important;max-width:100%!important;height:92px!important;object-fit:contain!important;object-position:center center!important;margin:0 auto!important;transform:none!important}
+}
+.receipt-logo{height:auto!important;min-height:20mm!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:visible!important;margin:0 auto 2mm!important}
+.receipt-logo img{display:block!important;width:44mm!important;max-width:100%!important;height:20mm!important;object-fit:contain!important;object-position:center center!important;margin:0 auto!important;transform:none!important}
+@media print{
+ .receipt-logo{min-height:18mm!important;margin-bottom:1.5mm!important}
+ .receipt-logo img{width:40mm!important;height:18mm!important}
+}
