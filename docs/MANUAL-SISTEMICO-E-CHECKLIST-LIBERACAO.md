@@ -166,3 +166,26 @@ Foram executados cenários transacionais com ROLLBACK, sem persistir vendas, vou
 Também foram verificados: cliente autenticado bloqueado em RPC administrativa, integridade sem órfãos, voucher parcial/múltiplas compras, estoque FIFO, encomenda até entrega, cancelamento/devolução, composição de pagamento, fechamento de caixa e RLS/SECURITY DEFINER. O snapshot das correções do banco está em `supabase/snapshots/2026-09-23-release-homologation.sql`.
 
 Pendências finais antes de declarar a versão totalmente liberada: validação visual/runtime de login/portal/recibos/revistas/mobile, push em navegador real e nova confirmação do deploy após os commits de consolidação.
+
+
+## 10. Fechamento da liberação técnica
+
+Status em 23/09/2026: LIBERAÇÃO TÉCNICA APROVADA COM RESSALVAS DE TESTE EM DISPOSITIVO REAL.
+
+Critérios técnicos concluídos nesta homologação:
+- build/deploy Vercel do commit consolidado confirmado com sucesso;
+- integridade de vouchers, estoque, parcelas, pagamentos e estornos sem inconsistências detectadas;
+- nenhuma venda entregue encontrada sem baixa de estoque;
+- nenhum voucher encontrado preso em reserva após entrega;
+- nenhum recebimento em dinheiro persistente encontrado sem vínculo de caixa;
+- RPCs administrativas críticas verificadas sem EXECUTE para anon;
+- RLS habilitado nas tabelas operacionais revisadas;
+- testes transacionais de PDV, estoque, voucher, encomenda, caixa, parcela, cancelamento e devolução concluídos com rollback.
+
+Pendências não bloqueantes para acompanhamento operacional:
+- validar visualmente em navegador/aparelho real o layout mobile e impressão 80 mm/PNG;
+- validar opt-in/negação de push em navegador real;
+- acompanhar o primeiro pedido, primeira venda, primeiro fechamento de caixa e primeira compra de fornecedor reais;
+- manter os 12 registros históricos não confirmados fora da contabilização até conferência manual.
+
+A aprovação acima não substitui a conferência operacional do primeiro uso real. Qualquer divergência deve ser registrada antes de alteração manual no banco.
