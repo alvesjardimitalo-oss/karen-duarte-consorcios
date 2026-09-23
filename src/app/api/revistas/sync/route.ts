@@ -1,0 +1,2 @@
+import{NextRequest,NextResponse}from'next/server';import{syncOfficialMagazines}from'@/modules/magazines/sync-service';
+export async function GET(req:NextRequest){const secret=process.env.CRON_SECRET;if(!secret||req.headers.get('authorization')!==`Bearer ${secret}`)return NextResponse.json({error:'unauthorized'},{status:401});try{return NextResponse.json(await syncOfficialMagazines())}catch(e:any){return NextResponse.json({error:String(e?.message||e)},{status:500})}}
