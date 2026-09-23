@@ -52,10 +52,10 @@ Atualizado em 23/09/2026. Documento de operação, diagnóstico e limpeza antes 
 - 2 vouchers atuais.
 - 1 pedido/venda atual.
 - 3 resgates históricos confirmados e 12 ainda em conferência.
-- 0 revistas ativas.
+- 3 revistas oficiais ativas.
 - 0 compras de fornecedor, 0 lotes de estoque e 0 contas a pagar.
 - 0 assinaturas push.
-- Tabela payments está vazia; o sistema também possui pagamentos específicos de vendas/parcelas.
+- A baixa de parcelas do consórcio foi homologada; pagamentos em DINHEIRO agora ficam vinculados ao caixa aberto.
 - Não foram encontrados pedidos sem cliente, participantes órfãos ou parcelas órfãs.
 
 ## 4. Checklist funcional
@@ -68,29 +68,29 @@ Legenda: OK = código e estrutura presentes / ATENÇÃO = existe, mas precisa te
 | Login cliente | OK | Portal vincula usuário ao cadastro de cliente. |
 | Clientes | OK | Cadastro/edição e vínculo de acesso implementados. |
 | Consórcios | OK | Estrutura ativa e participantes carregados. |
-| Parcelas de consórcio | ATENÇÃO | 500 registros, mas tabela payments está vazia; validar baixa real ponta a ponta. |
+| Parcelas de consórcio | OK | Baixa homologada; pagamento confirmado e integração com caixa em DINHEIRO testados com rollback. |
 | Agenda/sorteios | ATENÇÃO | 15 sorteios/contemplações; validar que agenda predeterminada nunca randomiza mês bloqueado. |
-| Vouchers | ATENÇÃO | Ledger e saldo existem; testar uso parcial e segundo uso do mesmo voucher. |
+| Vouchers | OK | Uso parcial, múltiplas compras, cancelamento, entrega e devolução homologados com rollback. |
 | Histórico Revendi | ATENÇÃO | 3 confirmados e 12 pendentes; manter separado do financeiro oficial até conferência. |
 | Catálogo de produtos | OK | 267 produtos ativos. |
-| Revistas | ATENÇÃO | Módulo funciona, porém banco está sem revista ativa. |
+| Revistas | ATENÇÃO | 3 revistas oficiais ativas e sincronização automatizada; falta validação visual/runtime final no portal. |
 | Pedido pelo portal | ATENÇÃO | Fluxo existe; testar pedido → orçamento → pagamento → entrega. |
-| PDV | ATENÇÃO | Fluxo amplo implementado; exige matriz de testes antes da produção. |
+| PDV | OK | PIX, FIFO, misto, parcelado, cancelamento, entrega e devolução homologados em cenários transacionais. |
 | Venda parcelada | ATENÇÃO | Parcelas e comprovante implementados; testar pagamento parcial, vencimento e quitação. |
-| Pagamento misto | ATENÇÃO | Estrutura/RPC v2 presente; testar PIX + dinheiro/cartão + voucher. |
-| Cancelamento/estorno | ATENÇÃO | RPCs e histórico existem; testar reversão financeira e estoque. |
-| Devolução | ATENÇÃO | Função de devolução existe; testar retorno ao estoque e estorno. |
+| Pagamento misto | OK | Composição de pagamentos e divergências de total testadas; valores inconsistentes são bloqueados. |
+| Cancelamento/estorno | OK | Reversão financeira, liberação de reserva e idempotência verificadas. |
+| Devolução | OK | Retorno ao estoque, estorno e restauração do voucher homologados. |
 | Comprovante cliente | OK | Tela, impressão/PDF e PNG implementados. |
 | Comprovante admin | ATENÇÃO | Reimpressão existente; validar visual e conteúdo contra comprovante cliente. |
 | Compras fornecedor | ATENÇÃO | Estrutura/RPC existe, mas banco atual não tem compra real. |
-| Estoque/lotes | ATENÇÃO | Estrutura existe, mas banco atual não tem lote real; testar FIFO/reserva/consumo. |
+| Estoque/lotes | OK | FIFO, reserva, consumo, estoque insuficiente e devolução homologados com dados sintéticos/rollback. |
 | Contas a pagar | ATENÇÃO | Estrutura existe, sem registros reais para validar. |
-| Caixa | ATENÇÃO | Existe 1 sessão; testar abertura, suprimento, sangria, despesa e fechamento. |
+| Caixa | OK | Abertura, suprimento, sangria, despesa, venda/parcela em dinheiro e fechamento homologados. |
 | Push | ATENÇÃO | UI existe, porém 0 assinaturas no banco. |
 | Auditoria | ATENÇÃO | Tabela existe com poucos registros; verificar cobertura das operações críticas. |
 | PWA/mobile | ATENÇÃO | Manifest/registro presentes; testar instalação e navegação em aparelho real. |
-| Build | BLOQUEADOR | Foi encontrado e corrigido erro de sintaxe recente em /portal/meus-pedidos; ainda requer build completo pós-correção. |
-| Segurança RPC | BLOQUEADOR | Supabase Advisor aponta SECURITY DEFINER expostas a roles amplas; revisar EXECUTE antes de liberar. |
+| Build | OK | Vercel reportou build/deploy de produção com sucesso no commit verificado; nova checagem será feita após consolidação final. |
+| Segurança RPC | OK | RPCs críticas revisadas; anon removido das rotinas administrativas testadas e cliente foi bloqueado em PDV/estoque administrativo. |
 
 ## 5. Lógicas legadas / duplicadas para inventário e limpeza
 
@@ -114,7 +114,7 @@ Não apagar diretamente em produção. Primeiro localizar chamadas no código e 
 
 ## 6. Segurança antes da liberação
 
-O Advisor do Supabase identificou funções SECURITY DEFINER executáveis por anon/authenticated. Isso não prova exploração, mas é bloqueador de revisão porque funções de caixa, estoque, vendas, sorteios e administração não devem depender apenas de a função ser SECURITY DEFINER. Revisar grants e garantir checagem de perfil/role dentro das operações críticas.
+A revisão de liberação confirmou RLS habilitado nas tabelas operacionais e checagens internas de staff/admin nas RPCs críticas examinadas. Execução anon foi removida das rotinas administrativas revisadas. Os fluxos públicos de solicitação de acesso e recuperação de senha permanecem públicos intencionalmente por ocorrerem antes do login.
 
 Também há:
 - auth_rate_limits com RLS e sem policy — pode ser intencional se acesso for somente por função/service role.
@@ -157,3 +157,12 @@ Não liberar como “pronto” enquanto houver BLOQUEADOR. Para a primeira vers�
 - nenhum histórico PROVAVEL contabilizado como confirmado.
 
 Depois disso, módulos sem dados reais (compras fornecedor, estoque, push, revistas) podem ser liberados somente após pelo menos um cenário controlado de homologação.
+
+
+## 9. Homologação técnica de 23/09/2026
+
+Foram executados cenários transacionais com ROLLBACK, sem persistir vendas, vouchers, estoque ou pagamentos de teste. Três falhas reais foram encontradas e corrigidas: liberação de reservas de compra no cancelamento, parcelas de consórcio em dinheiro fora do fechamento do caixa e voucher do PDV permanecendo reservado após a entrega.
+
+Também foram verificados: cliente autenticado bloqueado em RPC administrativa, integridade sem órfãos, voucher parcial/múltiplas compras, estoque FIFO, encomenda até entrega, cancelamento/devolução, composição de pagamento, fechamento de caixa e RLS/SECURITY DEFINER. O snapshot das correções do banco está em `supabase/snapshots/2026-09-23-release-homologation.sql`.
+
+Pendências finais antes de declarar a versão totalmente liberada: validação visual/runtime de login/portal/recibos/revistas/mobile, push em navegador real e nova confirmação do deploy após os commits de consolidação.
